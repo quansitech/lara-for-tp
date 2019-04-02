@@ -1,0 +1,30 @@
+{
+    "name": "tiderjian/lara-for-tp",
+    "description": "laravel for tp3.2 as a tools",
+    "type": "project",
+    "keywords": [
+        "laravel-admin",
+        "thinkphp3.2"
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "laravel/laravel": "^5.8",
+        "phpunit/phpunit": "^8.0",
+        "laravel/dusk": "^5.0",
+        "mockery/mockery": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lara\\": "../../lara/",
+            "Lara\\Tests\\":"../../lara/tests/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "tiderjian",
+            "email": "164710115@qq.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
