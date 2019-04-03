@@ -15,8 +15,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Lara\\": "../../lara/",
-            "Lara\\Tests\\":"../../lara/tests/"
+            "Lara\\": "../../../lara/",
+            "Lara\\Tests\\":"../../../lara/tests/"
         }
     },
     "license": "MIT",
