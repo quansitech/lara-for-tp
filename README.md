@@ -10,8 +10,9 @@
    
 
 ## 安装
+安装[qs_cmf](https://github.com/tiderjian/qs_cmf)
 
-通过composer安装
+composer安装
 ```
 composer require tiderjian/lara-for-tp
 ```
