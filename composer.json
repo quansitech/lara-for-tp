@@ -7,8 +7,8 @@
         "thinkphp3.2"
     ],
     "require": {
-        "php": ">=7.0.0",
-        "laravel/framework": "~5.5.0",
+        "php": ">=7.2.0",
+        "laravel/framework": "~5.8.0",
         "phpunit/phpunit": "^8.0",
         "laravel/dusk": "^5.0",
         "mockery/mockery": "^1.2"
