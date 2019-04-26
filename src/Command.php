@@ -10,6 +10,14 @@ class Command{
         $filesystem = new Filesystem();
         $root =  realpath(dirname(LARAFORTP_COMPOSER_INSTALL) . '/../');
 
+        if($filesystem->exists($root . '/lara')){
+            fwrite(
+                STDOUT,
+                '检查到larafortp已经安装，无需重复安装' . PHP_EOL
+            );
+            die(0);
+        }
+
         $r = $filesystem->copyDirectory(__DIR__ . '/../stub', $root);
         if($r === false){
             fwrite(
@@ -41,7 +49,7 @@ class Command{
             die(1);
         }
 
-        $composer = new Composer($filesystem);
+        $composer = new Composer(new Filesystem());
         $composer->dumpAutoloads();
 
         fwrite(

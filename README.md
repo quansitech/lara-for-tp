@@ -17,10 +17,12 @@ composer安装
 composer require tiderjian/lara-for-tp
 ```
 
-安装后将代码包里的stub下的所有文件复制到tp项目的根目录。
+安装后执行vendor/bin/larafortp 脚本，完成自动安装。
 
 
 ## 使用
+目前支持的laravel功能有 migrate、make:model、make:seeder、db:seed，具体用法请自行查阅laravel手册。
+
 migrate文件必须存放在lara/database/migrations下,在lara目录下的.env文件中配置要访问的数据库,然后在项目根目录执行php artisan migrate即可完成数据库的迁移，相关的migrate命令可查看[laravel文档](https://learnku.com/docs/laravel/5.8/migrations/3928)。
 
 测试脚本必须存放到lara/tests路径下，继承该目录下的TestCase类。配置phpunit.xml文件，设置可用于测试使用的数据库及web服务地址端口。最后运行phpunit，执行测试脚本。关于laravel dusk的使用请查阅[laravel文档](https://learnku.com/docs/laravel/5.8/dusk/3943)。
