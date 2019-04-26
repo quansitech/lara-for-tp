@@ -11,13 +11,19 @@
         "laravel/framework": "~5.8.0",
         "phpunit/phpunit": "^8.0",
         "laravel/dusk": "^5.0",
-        "mockery/mockery": "^1.2"
+        "mockery/mockery": "^1.2",
+        "fzaninotto/faker": "^1.4"
     },
     "autoload": {
         "psr-4": {
             "Lara\\": "../../../lara/",
-            "Lara\\Tests\\":"../../../lara/tests/"
-        }
+            "Lara\\Tests\\":"../../../lara/tests/",
+            "App\\": "lara/app/"
+        },
+        "classmap": [
+            "lara/database/seeds",
+            "lara/database/factories"
+        ]
     },
     "license": "MIT",
     "authors": [
