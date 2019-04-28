@@ -35,6 +35,9 @@ class Command{
             die(1);
         }
 
+        //创建空database/factories文件夹，composer dump-autoload需要该文件夹完成映射配置
+        $filesystem->makeDirectory($root . '/lara/database/factories');
+
         $composerContent = $filesystem->get($root . '/composer.json');
         $composerPara = json_decode($composerContent, true);
         $composerPara['autoload']['classmap'] = ["lara/database/seeds", "lara/database/factories"];
