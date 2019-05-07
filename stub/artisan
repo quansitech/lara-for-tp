@@ -19,6 +19,8 @@ require __DIR__.'/vendor/autoload.php';
 
 $app = require  __DIR__.'/lara/bootstrap/app.php';
 
+$app->useEnvironmentPath(__DIR__);
+
 /*
 |--------------------------------------------------------------------------
 | Run The Artisan Application
