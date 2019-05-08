@@ -27,7 +27,9 @@ migrate文件必须存放在lara/database/migrations下,在lara目录下的.env�
 
 测试脚本必须存放到lara/tests路径下，继承该目录下的TestCase类。配置phpunit.xml文件，设置可用于测试使用的数据库及web服务地址端口。最后运行phpunit，执行测试脚本。关于laravel dusk的使用请查阅[laravel文档](https://learnku.com/docs/laravel/5.8/dusk/3943)。
 
-
+## 文档
+### MenuGenerate
+用于生成后台的菜单选项，使用说明可查看类注释
 
 ## lincense
 [MIT License](https://github.com/tiderjian/lara-for-tp/blob/master/LICENSE.MIT) AND [996ICU License](https://github.com/tiderjian/lara-for-tp/blob/master/LICENSE.996ICU)
