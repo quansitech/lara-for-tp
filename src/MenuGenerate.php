@@ -4,11 +4,11 @@ namespace Larafortp;
 use Illuminate\Support\Facades\DB;
 
 /*
- * 插入表数据
+ * 生成菜单和节点列表
  * 自动处理menu和node的关系
- * 使用lavaral的DB，这个类只能在lavaral下执行
+ *
  */
-class DatabaseInsert{
+class MenuGenerate{
     private static $menu_id;//菜单的节点id
     private static $pid;//父节点的id，即控制器的id的
 
