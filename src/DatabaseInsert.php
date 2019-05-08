@@ -12,9 +12,53 @@ class DatabaseInsert{
     private static $menu_id;//菜单的节点id
     private static $pid;//父节点的id，即控制器的id的
 
-    /*
-     * 多条插入
-     */
+        /*
+         * 多条插入，一般只用这个函数
+         *用法：
+        参数格式：
+        $data = array(
+                '菜单名称(必填)'=>array(
+                         array(
+                                'name'=>'方法名',       //（必填）
+                                'title'=>'节点名称',    //（必填）
+                                'controller'=>'控制器名称',//（必填）
+                                'sort' => 1, //排序       //（选填）
+                                'icon'=> '',//图标        //（选填）
+                                'remark'=> '',//备注      //（选填）
+                                'status'=>1,//状态        //（选填）
+                        ),
+                        ......
+                 ),
+                ......
+            );
+        例如：
+                $data = array(
+                '新闻中心1'=>array(
+                        array(
+                            'name'=>'index',
+                            'title'=>'内容管理',
+                            'controller'=>'News',
+                        ),
+                        array(
+                        'name'=>'index',
+                        'title'=>'分类管理',
+                        'sort' => 1,
+                        'controller'=>'controller1',
+                        'status'=>1,
+                    ),
+                ),
+                '集团机构'=>array(
+                    array(
+                        'name'=>'index',
+                        'title'=>'分类管理',
+                        'sort' => 1,
+                        'controller'=>'controller1',
+                        'status'=>1,
+                    ),
+                ),
+            );
+         *
+         */
     public static function insertAll($data){
         foreach ($data as $key => $datum) {
             self::insert($key,$datum);
