@@ -40,12 +40,12 @@ class DatabaseInsert{
                             'controller'=>'News',
                         ),
                         array(
-                        'name'=>'index',
-                        'title'=>'分类管理',
-                        'sort' => 1,
-                        'controller'=>'controller1',
-                        'status'=>1,
-                    ),
+                            'name'=>'index',
+                            'title'=>'分类管理',
+                            'sort' => 1,
+                            'controller'=>'controller1',
+                            'status'=>1,
+                        ),
                 ),
                 '集团机构'=>array(
                     array(
