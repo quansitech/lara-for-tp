@@ -31,5 +31,8 @@ migrate文件必须存放在lara/database/migrations下,在lara目录下的.env�
 ### MenuGenerate
 用于生成后台的菜单选项，使用说明可查看类注释
 
+### Faker
+laravel默认得Faker工具不支持zh_CN简体文本的生成，修复了该问题
+
 ## lincense
 [MIT License](https://github.com/tiderjian/lara-for-tp/blob/master/LICENSE.MIT) AND [996ICU License](https://github.com/tiderjian/lara-for-tp/blob/master/LICENSE.996ICU)
