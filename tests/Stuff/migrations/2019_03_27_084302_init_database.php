@@ -43,11 +43,7 @@ class InitDatabase extends Migration
             $table->tinyInteger('level');
         });
 
-        $areas = require database_path('migrations/data/area_data1.php');
-
-        DB::table('qs_area')->insert($areas);
-
-        $areas = require database_path('migrations/data/area_data2.php');
+        $areas = require database_path('migrations/data/area_data.php');
 
         DB::table('qs_area')->insert($areas);
 
