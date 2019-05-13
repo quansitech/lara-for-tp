@@ -23,6 +23,11 @@
             "Larafortp\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Larafortp\\Tests\\": "tests/"
+        }
+    },
     "bin": [
         "larafortp"
     ],
