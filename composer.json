@@ -16,6 +16,9 @@
         "doctrine/dbal": "2.*"
     },
     "autoload": {
+        "classmap": [
+            "src\/Faker\/Provider\/zh_CN"
+        ],
         "psr-4": {
             "Lara\\": "../../../lara/",
             "Lara\\Tests\\":"../../../lara/tests/",
