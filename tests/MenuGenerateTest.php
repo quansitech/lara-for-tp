@@ -1,11 +1,13 @@
 <?php
+
 namespace Larafortp\Tests;
 
 use Larafortp\MenuGenerate;
 
-class MenuGenerateTest extends TestCase{
-
-    public function testInsertAll(){
+class MenuGenerateTest extends TestCase
+{
+    public function testInsertAll()
+    {
 //        $data = [];
 //
 //        MenuGenerate::insertAll($data);
@@ -14,6 +16,4 @@ class MenuGenerateTest extends TestCase{
 
         $this->assertTrue(true);
     }
-
-
 }

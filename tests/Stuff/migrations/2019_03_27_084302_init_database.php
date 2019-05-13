@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class InitDatabase extends Migration
 {
@@ -33,7 +33,7 @@ class InitDatabase extends Migration
             $table->unsignedTinyInteger('has_adminlist')->default(0)->comment('是否有后台列表');
         });
 
-        Schema::create('qs_area', function(Blueprint $table){
+        Schema::create('qs_area', function (Blueprint $table) {
             $table->integer('id')->primary();
             $table->string('cname', 100);
             $table->string('cname1', 50);
@@ -47,7 +47,7 @@ class InitDatabase extends Migration
 
         DB::table('qs_area')->insert($areas);
 
-        Schema::create('qs_coder_log', function(Blueprint $table){
+        Schema::create('qs_coder_log', function (Blueprint $table) {
             $table->integer('id', true);
             $table->string('coder_name', 30);
             $table->text('content');
@@ -55,11 +55,11 @@ class InitDatabase extends Migration
             $table->string('name', 50);
         });
 
-        $coderLogs = require database_path('migrations/data/coder_log_data.php');;
+        $coderLogs = require database_path('migrations/data/coder_log_data.php');
 
         DB::table('qs_coder_log')->insert($coderLogs);
 
-        Schema::create('qs_config', function(Blueprint $table){
+        Schema::create('qs_config', function (Blueprint $table) {
             $table->unsignedInteger('id', true)->comment('配置ID');
             $table->string('name', 30)->default('')->comment('配置名称');
             $table->string('type', 20)->default(0)->comment('配置类型');
@@ -76,24 +76,22 @@ class InitDatabase extends Migration
 
         $configs = require database_path('migrations/data/config_data.php');
 
-
         DB::table('qs_config')->insert($configs);
 
-        Schema::create('qs_file_pic', function(Blueprint $table){
+        Schema::create('qs_file_pic', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title', 200)->default('');
             $table->string('file', 100);
             $table->string('url', 500)->default('');
             $table->string('ref_id', 200)->default('');
-            $table->integer('size');;
+            $table->integer('size');
             $table->string('cate', 50);
             $table->tinyInteger('security')->default(0);
             $table->integer('owner')->default(0);
             $table->integer('upload_date')->default(0);
         });
 
-
-        Schema::create('qs_hooks', function(Blueprint $table){
+        Schema::create('qs_hooks', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name', 100);
             $table->string('desc', 500);
@@ -103,10 +101,9 @@ class InitDatabase extends Migration
 
         $hooks = require database_path('migrations/data/hooks_data.php');
 
-
         DB::table('qs_hooks')->insert($hooks);
 
-        Schema::create('qs_js_errlog', function(Blueprint $table){
+        Schema::create('qs_js_errlog', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('browser', 200)->default('');
             $table->string('msg', 500)->default('');
@@ -119,8 +116,7 @@ class InitDatabase extends Migration
             $table->integer('create_date')->default(0);
         });
 
-
-        Schema::create('qs_menu', function(Blueprint $table){
+        Schema::create('qs_menu', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('title', 50);
             $table->tinyInteger('status');
@@ -137,7 +133,7 @@ class InitDatabase extends Migration
 
         DB::table('qs_menu')->insert($menus);
 
-        Schema::create('qs_node', function(Blueprint $table){
+        Schema::create('qs_node', function (Blueprint $table) {
             $table->unsignedSmallInteger('id', true);
             $table->string('name', 50);
             $table->string('title', 50);
@@ -155,7 +151,7 @@ class InitDatabase extends Migration
 
         DB::table('qs_node')->insert($nodes);
 
-        Schema::create('qs_post', function(Blueprint $table){
+        Schema::create('qs_post', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('title', 50)->comment('标题');
             $table->integer('cate_id')->comment('所属分类');
@@ -174,7 +170,7 @@ class InitDatabase extends Migration
             $table->tinyInteger('up');
         });
 
-        Schema::create('qs_post_cate', function(Blueprint $table){
+        Schema::create('qs_post_cate', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name', 50)->comment('分类');
             $table->integer('pid')->comment('上级分类');
@@ -186,7 +182,7 @@ class InitDatabase extends Migration
             $table->tinyInteger('status')->comment('状态');
         });
 
-        Schema::create('qs_queue', function(Blueprint $table){
+        Schema::create('qs_queue', function (Blueprint $table) {
             $table->string('id', 100)->primary();
             $table->string('job', 100);
             $table->string('args', 2000);
@@ -197,7 +193,7 @@ class InitDatabase extends Migration
             $table->string('queue', 50);
         });
 
-        Schema::create('qs_role', function(Blueprint $table){
+        Schema::create('qs_role', function (Blueprint $table) {
             $table->unsignedSmallInteger('id', true);
             $table->string('name', 20);
             $table->smallInteger('pid')->default(0);
@@ -205,12 +201,12 @@ class InitDatabase extends Migration
             $table->string('remark', 255)->nullable()->default(null);
         });
 
-        Schema::create('qs_role_user', function(Blueprint $table){
+        Schema::create('qs_role_user', function (Blueprint $table) {
             $table->unsignedMediumInteger('role_id')->nullable()->default(null);
             $table->char('user_id', 32)->nullable()->default(null);
         });
 
-        Schema::create('qs_schedule', function(Blueprint $table){
+        Schema::create('qs_schedule', function (Blueprint $table) {
             $table->string('id', 50)->primary();
             $table->integer('run_time')->default(0);
             $table->string('desc', 200)->default('');
@@ -219,7 +215,7 @@ class InitDatabase extends Migration
             $table->integer('create_date')->default(0);
         });
 
-        Schema::create('qs_syslogs', function(Blueprint $table){
+        Schema::create('qs_syslogs', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('modulename', 30)->default('');
             $table->string('actionname', 30)->default('');
@@ -230,7 +226,7 @@ class InitDatabase extends Migration
             $table->integer('create_time');
         });
 
-        Schema::create('qs_user', function(Blueprint $table){
+        Schema::create('qs_user', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nick_name', 30);
             $table->integer('salt');
@@ -244,16 +240,16 @@ class InitDatabase extends Migration
         });
 
         $user = [
-            'id' => 1,
-            'nick_name' => 'admin',
-            'salt' => 487371,
-            'pwd' => '9b5240844dedd8003660e6ee0433d6f3',
-            'email' => 'admin@admin.com',
-            'telephone' => '15300000000',
-            'register_date' => 1464594432,
-            'status' => 1,
+            'id'              => 1,
+            'nick_name'       => 'admin',
+            'salt'            => 487371,
+            'pwd'             => '9b5240844dedd8003660e6ee0433d6f3',
+            'email'           => 'admin@admin.com',
+            'telephone'       => '15300000000',
+            'register_date'   => 1464594432,
+            'status'          => 1,
             'last_login_time' => 1552356067,
-            'last_login_ip' => '10.0.1.1',
+            'last_login_ip'   => '10.0.1.1',
         ];
         DB::table('qs_user')->insert($user);
     }
