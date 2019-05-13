@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\DB;
  *
  */
 class MenuGenerate{
-    private static $menu_id;//菜单的节点id
-    private static $pid;//父节点的id，即控制器的id的
+    private static $menu_id=0;//菜单的节点id      node::level=3时node::pid使用这个值，
+    private static $node_pid=0;//父节点的id，即控制器的id的 node::level=3时pid使用这个值
+    private static $menu_pid=0;//菜单的pid     menu::level=2时menu pid使用这个值（这个值产生于插入头部导航栏）
+    private static $module_id=0;//模块id        node::level=2时pid使用这个值
 
         /*
          * 多条插入，一般只用这个函数
@@ -60,13 +62,85 @@ class MenuGenerate{
          *
          */
     public static function insertAll($data){
-        foreach ($data as $key => $datum) {
-            self::insert($key,$datum);
+        DB::beginTransaction();
+        try{
+            foreach ($data as $key => $datum) {
+                self::insert($key,$datum);
+            }
+        } catch(\Exception $e){
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            DB::rollBack();
         }
+        DB::commit();
+    }
+    /*
+     *
+     *
+     $data = array(
+                 array(
+                        'title'=>''，//标题              (必填)
+                        'module'=>'',//模块英文名        (必填)
+                        'module_name'=>'',//模块中文名   (必填)
+                        'url'=>'',//url                  (必填)
+                        'type'=>'',//类型                (选填）注意，选填的内容如果为0或者空，不要填写这一对组值
+                        'sort'=>'',//排序                (选填）
+                        'icon'=>'',//icon                (选填）
+                        'status'=>'',//状态              (选填）
+                        'top_menu' => array(
+                                    '菜单名称(必填)'=>array(
+                                            array(
+                                                'name'=>'方法名',       //（必填）
+                                                'title'=>'节点名称',    //（必填）
+                                                'controller'=>'控制器名称',//（必填）
+                                                'sort' => 1, //排序       //（选填）注意，选填的内容如果为0或者空，不要填写这一对组值
+                                                'icon'=> '',//图标        //（选填）
+                                                'remark'=> '',//备注      //（选填）
+                                                'status'=>1,//状态        //（选填）
+                                            ),
+                                            ......
+                                     ),
+                                ......
+                       ),
+                ),
+                ......
+            );
+     *
+     *
+     */
+    public static function insertNavigationAll($data){
+        DB::beginTransaction();
+        try{
+
+            //取出每一个top_menu
+            foreach ($data as $item) {
+                self::insertNavigation($item);
+            }
+        } catch(\Exception $e){
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            DB::rollBack();
+        }
+        DB::commit();
     }
 
+    public static function insertNavigation($data){
+        //这个方法处理数据的
+        $data['type'] = 'top_menu';
+        //等级为1
+        $data['level'] = '1';
+        //传创建top_menu
+        self::insertMenu($data);
+        //创建模块
+        self::insertNodeModul($data);
+        //创建菜单和节点
+        foreach ($data['top_menu'] as $key => $item) {
+            $menuData['title'] = $key;
+            $menuData['level'] = 2;
+            $menuData['pid'] = self::$menu_pid;
+            self::insert($menuData,$item);
+        }
+    }
     /*
-     * $menuData 为字符串
+     * $menuData 为字符串或者数组
      * $contronller 二维数组
      * $contronller = array(
         array(
@@ -82,20 +156,16 @@ class MenuGenerate{
      *
      */
     public static function insert($menuData,$controlAction){
-        if(!self::insertMenu($menuData)) exit('菜单插入异常');
-        foreach ($controlAction as $item) {
-            if(self::insertNodeContronller($item['controller'])){
-                unset($data);
-                $data = array();
-                $data['name'] = $item['name'];
-                $data['title'] = $item['title'];
-                $data['sort'] = isset($item['sort'])? (int)$item['sort'] : 0;
-                $data['icon'] = isset($item['icon'])? $item['icon'] : '';
-                $data['remark'] = isset($item['remark'])? $item['remark'] : '';
-                $data['status'] = isset($item['status'])? $item['status'] : 1;
-                self::insertNodeAction($data);
-            }
 
+        self::insertMenu($menuData);
+        foreach ($controlAction as $item) {
+            $controller['name'] =  $item['controller'];
+            if(!empty(self::$module_id)){
+                $controller['pid'] =  self::$module_id;
+                $controller['menu_id'] =  0;
+            }
+            self::insertNodeContronller($controller);
+            self::insertNodeAction($item);
         }
 
     }
@@ -104,34 +174,92 @@ class MenuGenerate{
      * $tableData =array('title'=>);
      * $tablData = 'string';
      * 注意只有title是必填项
+     * 这个主要处理menu的逻辑关系
      */
     public static function insertMenu($tableData){
-        $data = self::createMenuDataArray($tableData);
-        //获取数据
-        $firstData = DB::table('qs_menu')->where('title', $data['title'])->orderBy('id')->first();
-        if(!empty($firstData)){
-            self::$menu_id = $firstData->id;
+        /*
+         * 菜单数据有两种level=1,为头部导航，level=2为左边导航
+         */
+        if(is_array($tableData)){
+            //获取数据
+            if(isset($tableData['level'])&&$tableData['level']==1){
+                $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 1)->first();
+            }else{
+                if(!empty(self::$menu_pid)){
+                    $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 2)->where('pid', self::$menu_pid)->first();
+                }else{
+                    $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 2)->first();
+                }
+            }
+            if(isset($firstData->level) && $firstData->level==1){
+                self::$menu_pid = $firstData->id;
+            }elseif (isset($firstData->level) && $firstData->level==2){
+                self::$menu_id = $firstData->id;
+            }else{
+                $data = self::createMenuDataArray($tableData);
+                self::$menu_id = DB::table('qs_menu')->insertGetId($data);
+                if($data['level']==1){
+                    self::$menu_pid = self::$menu_id;
+                }
+            }
         }else{
-            self::$menu_id = DB::table('qs_menu')->insertGetId($data);
+            $firstData = DB::table('qs_menu')->where('title', $tableData)->where('level', 2)->first();
+            if(empty($firstData)){
+                $data = self::createMenuDataArray($tableData);
+                self::$menu_id = DB::table('qs_menu')->insertGetId($data);
+            }else{
+                self::$menu_id = $firstData->id;
+            }
         }
-        return self::$menu_id;
     }
-
+    //处理模块的逻辑关系
+    public static function insertNodeModul($tableData){
+        if(empty($tableData['module']) || empty($tableData['module_name'])){
+            throw new \Exception('模块创建异常,模块名为空');
+        }
+        $firstData = DB::table('qs_node')->where('name', $tableData['module'])->where('level', 1)->first();
+        if(empty($firstData)){
+            $data = array();
+            $data['name'] = $tableData['module'];
+            $data['title'] = $tableData['module_name'];
+            $data['sort'] = 0;
+            $data['pid'] = 0;
+            $data['level'] = 1;
+            $data['menu_id'] = 0;
+            $data['icon'] = '';
+            $data['remark'] = '';
+            $data['status'] = 1;
+            self::$module_id = DB::table('qs_node')->insertGetId($data);
+        }else{
+            self::$module_id = $firstData->id;
+        }
+    }
     /*
      * 创建node数据中的控制器数据，
      * 数据格式应为
      *$tableData =array('name'=>);
      * $tablData = 'string';
+     * 这个处理控制器的逻辑关系
      */
     public static function insertNodeContronller($tableData){
-        $data = self::createNodeController($tableData);
-        $firstData = DB::table('qs_node')->where('name', $data['name'])->orderBy('id')->first();
-        if(!empty($firstData)){
-            self::$pid = $firstData->id;
+        //查找控制器是否存在
+        //添加控制器
+        if(!empty(self::$module_id)){
+            $tableData['pid'] = self::$module_id;
         }else{
-            self::$pid = DB::table('qs_node')->insertGetId($data);
+            $tableData['pid'] =1;
         }
-        return self::$pid;
+        $data = self::createNodeController($tableData);
+        if(!empty(self::$module_id)){
+            $firstData = DB::table('qs_node')->where('name', $data['name'])->where('pid', self::$module_id)->where('level', 2)->first();
+        }else{
+            $firstData = DB::table('qs_node')->where('name', $data['name'])->where('level', 2)->where('pid', 1)->first();
+        }
+        if(!empty($firstData)){
+            self::$node_pid = $firstData->id;
+        }else{
+            self::$node_pid = DB::table('qs_node')->insertGetId($data);
+        }
     }
     /*
      * 创建node数据中的方法数据，传值为
@@ -142,7 +270,7 @@ class MenuGenerate{
         //注意没有查重
         $id = DB::table('qs_node')->insertGetId($data);
         if(empty($id)){
-            return false;
+            throw new \Exception($data['name'].'方法创建异常');
         }else{
             return $id;
         }
@@ -150,18 +278,23 @@ class MenuGenerate{
 
     /*
      *创建menu数据
+     * 负责数据生成
      */
     private static function createMenuDataArray($tableData){
         $data = array();
         if( is_array( $tableData ) )
         {
             //检验标题
-            $data['title'] = (isset($tableData['title']) && !empty($tableData['title']))? $tableData['title']: exit('title为空请检查');
+            if(isset($tableData['title']) && !empty($tableData['title'])){
+                $data['title'] = $tableData['title'];
+            }else{
+                throw new \Exception('title为空请检查');
+            }
             $data['sort']  = isset($tableData['sort'])? (int)$tableData['sort'] : 0;
             $data['icon']  = isset($tableData['icon'])? $tableData['icon'] : '';
-            $data['type']  = isset($tableData['type'])? $tableData['type'] : 'backend_menu';
+            $data['type']  = (isset($tableData['type']) && !empty($tableData['type']))? $tableData['type'] : 'backend_menu';
             $data['url']  = isset($tableData['url'])? $tableData['url'] : '';
-            $data['pid']  = isset($tableData['pid'])? (int)$tableData['pid'] : 3;
+            $data['pid']  = isset($tableData['pid'])? $tableData['pid'] : self::$menu_pid;
             $data['module']  = isset($tableData['module'])? $tableData['module'] : '';
             $data['status']  = isset($tableData['status'])? (int)$tableData['status'] : 1;
             $data['level']  = isset($tableData['level'])? (int)$tableData['level'] : 2;
@@ -169,7 +302,7 @@ class MenuGenerate{
         else
         {
             if(empty($tableData)){
-                exit('错误，创建了空菜单数据');
+                throw new \Exception('错误，菜单数据为空');
             }
             $data = array(
                 'title' => $tableData,
@@ -195,19 +328,23 @@ class MenuGenerate{
         if( is_array( $data ) )
         {
             //检验标题
-            $ControllerData['name'] = (isset($data['name']) && !empty($data['name']))? $data['name']: exit('控制器名为空请检查');
+            if(isset($data['name']) && !empty($data['name'])){
+                $ControllerData['name'] = $data['name'];
+            }else{
+                throw new \Exception('控制器名为空请检查');
+            }
             $ControllerData['title']  = $ControllerData['name'];
             $ControllerData['status']  = isset($data['status'])? (int)$data['status'] : 1;
             $ControllerData['remark']  = isset($data['remark'])? $data['remark'] : '';
             $ControllerData['sort']  = isset($data['sort'])? (int)$data['sort'] : 0;
-            $ControllerData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : 1;
+            $ControllerData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : (empty(self::$node_pid)?1:self::$node_pid);
             $ControllerData['level']  = isset($data['level'])? (int)$data['level'] : 2;
-            $ControllerData['menu_id']  = isset($data['menu_id'])? (int)$data['menu_id'] : 0;
+            $ControllerData['menu_id']  = isset($data['menu_id'])? (int)$data['menu_id'] : (empty(self::$menu_pid)? 0:self::$menu_pid);
             $ControllerData['icon']  = isset($data['icon'])? $data['icon'] : '';
             $ControllerData['url']  = isset($data['url'])? $data['url'] : '';
         }else{
             if(empty($data)){
-                exit('错误，创建了空控制器数据');
+                throw new \Exception('错误，控制器数据为空');
             }
             $ControllerData = array(
                 'name' => $data, //控制器
@@ -234,18 +371,26 @@ class MenuGenerate{
         if( is_array( $data ) )
         {
             //检验标题
-            $actionData['name'] = (isset($data['name']) && !empty($data['name']))? $data['name']: exit('方法名名为空请检查');
-            $actionData['title']  = (isset($data['title']) && !empty($data['title']))? $data['title'] : exit('标题为空请检查');
+            if((isset($data['name']) && !empty($data['name']))){
+                $actionData['name'] = $data['name'];
+            }else{
+                throw new \Exception('方法名名为空请检查');
+            }
+            if(isset($data['title']) && !empty($data['title'])){
+                $actionData['title']  = $data['title'];
+            }else{
+                throw new \Exception('标题为空请检查');
+            }
             $actionData['status']  = (isset($data['status']) && !empty($data['status']))? (int)$data['status'] : 1;
             $actionData['remark']  = isset($data['remark'])? $data['remark'] : '';
             $actionData['sort']  = isset($data['sort']) ? (int)$data['sort'] : 0;
-            $actionData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : self::$pid;
+            $actionData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : self::$node_pid;
             $actionData['level']  = (isset($data['level'])  && !empty($data['level']))? (int)$data['level'] : 3;
             $actionData['menu_id']  = (isset($data['menu_id']) && !empty($data['menu_id'])) ? (int)$data['menu_id'] : self::$menu_id;
             $actionData['icon']  = isset($data['icon'])? $data['icon'] : '';
             $actionData['url']  = isset($data['url'])? $data['url'] : '';
         }else{
-            exit('错误，方法的数据格式不正确');
+            throw new \Exception('错误，方法的数据格式不正确');
         }
         return $actionData;
     }

@@ -1,0 +1,51 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateSeed extends Migration
+{
+    private $menuData = array(
+        '测试模块'=>array(
+            array(
+                'name'=>'index2',
+                'title'=>'首页轮播图',
+                'sort' => 0,
+                'controller'=>'NewsCate',
+                'status'=>1,
+            ),
+            array(
+                'name'=>'index3',
+                'title'=>'首页信息配置',
+                'sort' => 1,
+                'controller'=>'NewsCate',
+                'status'=>1,
+            ),
+            array(
+                'name'=>'money4',
+                'title'=>'捐款总金额',
+                'controller'=>'NewsCate'
+            ),
+        ),
+    );
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        \Larafortp\MenuGenerate::insertAll($this->menuData);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        \Larafortp\RollbackMenuNode::insertAllDelete($this->menuData);
+    }
+}
