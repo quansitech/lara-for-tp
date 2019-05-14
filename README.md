@@ -30,7 +30,7 @@ migrate文件必须存放在lara/database/migrations下,在lara目录下的.env�
 ## 文档
 ### MenuGenerate & RollbackMenuNode
 用于生成后台的菜单选项，使用说明可查看类注释
-####案例一
+###案例一
 ```
 <?php
 
@@ -86,7 +86,7 @@ class CreateSeed extends Migration
     }
 }
 ```
-####案例二
+###案例二
 ```
 <?php
 
