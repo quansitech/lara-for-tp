@@ -62,13 +62,12 @@ class TestCase extends DuskTestCase
 
         parent::setUp();
 
-        Browser::$storeScreenshotsAt = __DIR__ . '/Browser/screenshots';
-        Browser::$storeConsoleLogAt = __DIR__ . '/Browser/console';
+        Browser::$storeScreenshotsAt = __DIR__.'/Browser/screenshots';
+        Browser::$storeConsoleLogAt = __DIR__.'/Browser/console';
 
         $this->install();
 
         $this->runServer();
-
     }
 
     public function tearDown() : void
@@ -89,7 +88,6 @@ class TestCase extends DuskTestCase
         $this->artisan('migrate:reset');
     }
 
-
     protected function runServer()
     {
         $phpBinaryFinder = new \Symfony\Component\Process\PhpExecutableFinder();
@@ -98,7 +96,7 @@ class TestCase extends DuskTestCase
         $host = str_replace('http://', '', $this->app['config']['app.url']);
         $host = str_replace('https://', '', $host);
 
-        chdir(__DIR__ . '/../../www');
+        chdir(__DIR__.'/../../www');
 
         $this->serverProcess = new \Symfony\Component\Process\Process([$phpBinaryPath, '-S', $host, base_path('server.php')]);
         $this->serverProcess->start();

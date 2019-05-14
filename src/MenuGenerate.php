@@ -1,4 +1,5 @@
 <?php
+
 namespace Larafortp;
 
 use Illuminate\Support\Facades\DB;
@@ -167,8 +168,8 @@ class MenuGenerate{
             self::insertNodeContronller($controller);
             self::insertNodeAction($item);
         }
-
     }
+
     /*
      *插入数据到menu
      * $tableData =array('title'=>);
@@ -261,11 +262,13 @@ class MenuGenerate{
             self::$node_pid = DB::table('qs_node')->insertGetId($data);
         }
     }
+
     /*
      * 创建node数据中的方法数据，传值为
      * $data['name'] 和 $data['title'] 必须
      */
-    public static function insertNodeAction($tableData){
+    public static function insertNodeAction($tableData)
+    {
         $data = self::createNodeAction($tableData);
         //注意没有查重
         $id = DB::table('qs_node')->insertGetId($data);
@@ -280,10 +283,10 @@ class MenuGenerate{
      *创建menu数据
      * 负责数据生成
      */
-    private static function createMenuDataArray($tableData){
-        $data = array();
-        if( is_array( $tableData ) )
-        {
+    private static function createMenuDataArray($tableData)
+    {
+        $data = [];
+        if (is_array($tableData)) {
             //检验标题
             if(isset($tableData['title']) && !empty($tableData['title'])){
                 $data['title'] = $tableData['title'];
@@ -304,29 +307,31 @@ class MenuGenerate{
             if(empty($tableData)){
                 throw new \Exception('错误，菜单数据为空');
             }
-            $data = array(
-                'title' => $tableData,
-                'sort' => 10,
-                'icon' => 'fa-list',
-                'type' => 'backend_menu',
-                'url' => '',
-                'pid' => 3,
+            $data = [
+                'title'  => $tableData,
+                'sort'   => 10,
+                'icon'   => 'fa-list',
+                'type'   => 'backend_menu',
+                'url'    => '',
+                'pid'    => 3,
                 'module' => '',
                 'status' => 1,
-                'level' => 2,
-            );
+                'level'  => 2,
+            ];
         }
+
         return $data;
     }
+
     /*
      *创建node 控制器的数据
      * 数组$data['name'] 必须
      * 如果是传string，则需要传控制器名，
      */
-    private static function createNodeController($data){
-        $ControllerData = array();
-        if( is_array( $data ) )
-        {
+    private static function createNodeController($data)
+    {
+        $ControllerData = [];
+        if (is_array($data)) {
             //检验标题
             if(isset($data['name']) && !empty($data['name'])){
                 $ControllerData['name'] = $data['name'];
@@ -346,30 +351,31 @@ class MenuGenerate{
             if(empty($data)){
                 throw new \Exception('错误，控制器数据为空');
             }
-            $ControllerData = array(
-                'name' => $data, //控制器
-                'title' => $data,//控制器
-                'status' => 1,//状态
-                'remark' => '',//备注
-                'sort' => 0,//排序
-                'pid' => 1,//admin
-                'level' => 2,//等级
+            $ControllerData = [
+                'name'    => $data, //控制器
+                'title'   => $data, //控制器
+                'status'  => 1, //状态
+                'remark'  => '', //备注
+                'sort'    => 0, //排序
+                'pid'     => 1, //admin
+                'level'   => 2, //等级
                 'menu_id' => 0,
-                'icon' => '',//图标
-                'url' => '',//链接
-            );
-
+                'icon'    => '', //图标
+                'url'     => '', //链接
+            ];
         }
+
         return $ControllerData;
     }
+
     /*
      *创建node action数据（即方法、函数）
      * 注意必填项为$data['name']、$data['title']
      */
-    private static function createNodeAction($data){
-        $actionData = array();
-        if( is_array( $data ) )
-        {
+    private static function createNodeAction($data)
+    {
+        $actionData = [];
+        if (is_array($data)) {
             //检验标题
             if((isset($data['name']) && !empty($data['name']))){
                 $actionData['name'] = $data['name'];
@@ -392,8 +398,7 @@ class MenuGenerate{
         }else{
             throw new \Exception('错误，方法的数据格式不正确');
         }
+
         return $actionData;
     }
-
-
 }

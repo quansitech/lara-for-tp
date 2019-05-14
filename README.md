@@ -1,5 +1,6 @@
 # Lara for Tp
-
+![Travis (.com)](https://img.shields.io/travis/com/tiderjian/lara-for-tp.svg?style=flat-square)
+![style ci](https://img.shields.io/travis/com/tiderjian/lara-for-tp.svg?style=flat-square)
 ![download](https://img.shields.io/packagist/dt/tiderjian/lara-for-tp.svg?style=flat-square)
 ![lincense](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
