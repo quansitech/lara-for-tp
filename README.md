@@ -28,8 +28,119 @@ migrate文件必须存放在lara/database/migrations下,在lara目录下的.env�
 测试脚本必须存放到lara/tests路径下，继承该目录下的TestCase类。配置phpunit.xml文件，设置可用于测试使用的数据库及web服务地址端口。最后运行phpunit，执行测试脚本。关于laravel dusk的使用请查阅[laravel文档](https://learnku.com/docs/laravel/5.8/dusk/3943)。
 
 ## 文档
-### MenuGenerate
+### MenuGenerate & RollbackMenuNode
 用于生成后台的菜单选项，使用说明可查看类注释
+####案例一
+```
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateSeed extends Migration
+{
+    private $menuData = array(
+        array(
+            'title'=>'平台2',//标题              (必填)
+            'module'=>'admin1',//模块英文名        (必填)
+            'module_name'=>'后台管理',//模块中文名   (必填)
+            'url'=>'',//url                  (必填)
+            'type'=>'',//类型                (选填）
+            'sort'=>0,//排序                (选填）
+            'icon'=>'',//icon                (选填）
+            'status'=>1,//状态              (选填）
+            'top_menu' => array(
+                '新闻中心'=>array(
+                        array(
+                            'name'=>'index',       //（必填）
+                            'title'=>'测试新闻中心',    //（必填）'
+                            'controller'=>'News',//（必填）
+                            'sort' => 1, //排序       //（选填）
+                            'icon'=> '',//图标        //（选填）
+                            'remark'=> '',//备注      //（选填）
+                            'status'=>1,//状态        //（选填）
+                        ),
+                ),
+            ),
+        ),
+    );
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        \Larafortp\MenuGenerate::insertNavigationAll($this->menuData);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        \Larafortp\RollbackMenuNode::insertNavigationAllDelete($this->menuData);
+    }
+}
+```
+####案例二
+```
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateSeed extends Migration
+{
+    private $menuData = array(
+        '测试模块'=>array(
+            array(
+                'name'=>'index2',
+                'title'=>'首页轮播图',
+                'sort' => 0,
+                'controller'=>'NewsCate',
+                'status'=>1,
+            ),
+            array(
+                'name'=>'index3',
+                'title'=>'首页信息配置',
+                'sort' => 1,
+                'controller'=>'NewsCate',
+                'status'=>1,
+            ),
+            array(
+                'name'=>'money4',
+                'title'=>'捐款总金额',
+                'controller'=>'NewsCate'
+            ),
+        ),
+    );
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        \Larafortp\MenuGenerate::insertAll($this->menuData);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        \Larafortp\RollbackMenuNode::insertAllDelete($this->menuData);
+    }
+}
+
+```
 
 ### Faker
 laravel默认得Faker工具不支持zh_CN简体文本的生成，修复了该问题
