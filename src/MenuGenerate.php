@@ -3,6 +3,7 @@
 namespace Larafortp;
 
 use Illuminate\Support\Facades\DB;
+use Mockery\Exception;
 
 /*
  * 生成菜单和节点列表
@@ -10,10 +11,10 @@ use Illuminate\Support\Facades\DB;
  *
  */
 class MenuGenerate{
-    private static $menu_id=0;//菜单的节点id      node::level=3时node::pid使用这个值，
-    private static $node_pid=0;//父节点的id，即控制器的id的 node::level=3时pid使用这个值
-    private static $menu_pid=0;//菜单的pid     menu::level=2时menu pid使用这个值（这个值产生于插入头部导航栏）
-    private static $module_id=0;//模块id        node::level=2时pid使用这个值
+    public static $menu_id=0;//菜单的节点id      node::level=3时node::pid使用这个值，
+    public static $node_pid=0;//父节点的id，即控制器的id的 node::level=3时pid使用这个值
+    public static $menu_pid=0;//菜单的pid     menu::level=2时menu pid使用这个值（这个值产生于插入头部导航栏）
+    public static $module_id=0;//模块id        node::level=2时pid使用这个值
 
         /*
          * 多条插入，一般只用这个函数
@@ -69,8 +70,8 @@ class MenuGenerate{
                 self::insert($key,$datum);
             }
         } catch(\Exception $e){
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
             DB::rollBack();
+            throw $e;
         }
         DB::commit();
     }
@@ -117,8 +118,8 @@ class MenuGenerate{
                 self::insertNavigation($item);
             }
         } catch(\Exception $e){
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
             DB::rollBack();
+            throw $e;
         }
         DB::commit();
     }
@@ -157,16 +158,23 @@ class MenuGenerate{
      *
      */
     public static function insert($menuData,$controlAction){
-
-        self::insertMenu($menuData);
-        foreach ($controlAction as $item) {
-            $controller['name'] =  $item['controller'];
-            if(!empty(self::$module_id)){
-                $controller['pid'] =  self::$module_id;
-                $controller['menu_id'] =  0;
+        $controller = array();
+        try{
+            self::insertMenu($menuData);
+            foreach ($controlAction as $item) {
+                if(empty($item)){
+                    throw new \Exception('数据为空');
+                }
+                $controller['name'] =  $item['controller'];
+                if(!empty(self::$module_id)){
+                    $controller['pid'] =  self::$module_id;
+                    $controller['menu_id'] =  0;
+                }
+                self::insertNodeContronller($controller);
+                self::insertNodeAction($item);
             }
-            self::insertNodeContronller($controller);
-            self::insertNodeAction($item);
+        }catch (\Exception $e){
+            throw $e;
         }
     }
 
@@ -291,7 +299,7 @@ class MenuGenerate{
             if(isset($tableData['title']) && !empty($tableData['title'])){
                 $data['title'] = $tableData['title'];
             }else{
-                throw new \Exception('title为空请检查');
+                throw new \Exception('菜单title为空请检查');
             }
             $data['sort']  = isset($tableData['sort'])? (int)$tableData['sort'] : 0;
             $data['icon']  = isset($tableData['icon'])? $tableData['icon'] : '';
@@ -331,39 +339,22 @@ class MenuGenerate{
     private static function createNodeController($data)
     {
         $ControllerData = [];
-        if (is_array($data)) {
-            //检验标题
-            if(isset($data['name']) && !empty($data['name'])){
-                $ControllerData['name'] = $data['name'];
-            }else{
-                throw new \Exception('控制器名为空请检查');
-            }
-            $ControllerData['title']  = $ControllerData['name'];
-            $ControllerData['status']  = isset($data['status'])? (int)$data['status'] : 1;
-            $ControllerData['remark']  = isset($data['remark'])? $data['remark'] : '';
-            $ControllerData['sort']  = isset($data['sort'])? (int)$data['sort'] : 0;
-            $ControllerData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : (empty(self::$node_pid)?1:self::$node_pid);
-            $ControllerData['level']  = isset($data['level'])? (int)$data['level'] : 2;
-            $ControllerData['menu_id']  = isset($data['menu_id'])? (int)$data['menu_id'] : (empty(self::$menu_pid)? 0:self::$menu_pid);
-            $ControllerData['icon']  = isset($data['icon'])? $data['icon'] : '';
-            $ControllerData['url']  = isset($data['url'])? $data['url'] : '';
+        //检验标题
+        if(isset($data['name']) && !empty($data['name'])){
+            $ControllerData['name'] = $data['name'];
         }else{
-            if(empty($data)){
-                throw new \Exception('错误，控制器数据为空');
-            }
-            $ControllerData = [
-                'name'    => $data, //控制器
-                'title'   => $data, //控制器
-                'status'  => 1, //状态
-                'remark'  => '', //备注
-                'sort'    => 0, //排序
-                'pid'     => 1, //admin
-                'level'   => 2, //等级
-                'menu_id' => 0,
-                'icon'    => '', //图标
-                'url'     => '', //链接
-            ];
+            throw new \Exception('控制器名为空请检查');
         }
+        $ControllerData['title']  = $ControllerData['name'];
+        $ControllerData['status']  = isset($data['status'])? (int)$data['status'] : 1;
+        $ControllerData['remark']  = isset($data['remark'])? $data['remark'] : '';
+        $ControllerData['sort']  = isset($data['sort'])? (int)$data['sort'] : 0;
+        $ControllerData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : (empty(self::$node_pid)?1:self::$node_pid);
+        $ControllerData['level']  = isset($data['level'])? (int)$data['level'] : 2;
+        $ControllerData['menu_id']  = isset($data['menu_id'])? (int)$data['menu_id'] : (empty(self::$menu_pid)? 0:self::$menu_pid);
+        $ControllerData['icon']  = isset($data['icon'])? $data['icon'] : '';
+        $ControllerData['url']  = isset($data['url'])? $data['url'] : '';
+
 
         return $ControllerData;
     }
@@ -375,7 +366,7 @@ class MenuGenerate{
     private static function createNodeAction($data)
     {
         $actionData = [];
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             //检验标题
             if((isset($data['name']) && !empty($data['name']))){
                 $actionData['name'] = $data['name'];

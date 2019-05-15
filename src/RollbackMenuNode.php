@@ -39,8 +39,10 @@ class RollbackMenuNode{
                 ......
             );
      */
-    /**使用insertNavigationAll生成则是这个方法删除
+    /**
+     * 使用insertNavigationAll生成则是这个方法删除
      * @param $data
+     * @throws \Exception
      */
     public static function insertNavigationAllDelete($data){
         DB::beginTransaction();
@@ -62,15 +64,16 @@ class RollbackMenuNode{
                 }
             }
         } catch(\Exception $e){
-            echo 'Caught \Exception: ',  $e->getMessage(), "\n";
             DB::rollBack();
+            throw $e;
         }
         DB::commit();
     }
+
     /**
-     *
-     * 使用indertAll创建数据，则必须使用这个方法回滚
+     * * 使用indertAll创建数据，则必须使用这个方法回滚
      * @param $data
+     * @throws \Exception
      */
     public static function insertAllDelete($data){
         DB::beginTransaction();
@@ -79,8 +82,8 @@ class RollbackMenuNode{
                 self::handleMenuNode($key,$datum);
             }
         } catch(\Exception $e){
-            echo 'Caught \Exception: ',  $e->getMessage(), "\n";
             DB::rollBack();
+            throw $e;
         }
         DB::commit();
     }
