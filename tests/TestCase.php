@@ -53,8 +53,8 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         $files->cleanDirectory(__DIR__.'/../stub/lara/database/migrations');
         $files->cleanDirectory(__DIR__.'/../stub/lara/app');
         $files->cleanDirectory(__DIR__.'/../stub/lara/database/factories');
-        collect($files->files(__DIR__.'/../stub/lara/database/seeds'))->each(function($item) use ($files){
-            if($item->getRelativePathname() != 'DatabaseSeeder.php'){
+        collect($files->files(__DIR__.'/../stub/lara/database/seeds'))->each(function ($item) use ($files) {
+            if ($item->getRelativePathname() != 'DatabaseSeeder.php') {
                 $files->delete($item->getPathName());
             }
         });
