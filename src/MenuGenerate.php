@@ -128,7 +128,8 @@ class MenuGenerate{
         //这个方法处理数据的
         $data['type'] = 'top_menu';
         //等级为1
-        $data['level'] = '1';
+        $data['level'] = 1;
+        $data['pid'] = 0;
         //传创建top_menu
         self::insertMenu($data);
         //创建模块
@@ -186,6 +187,9 @@ class MenuGenerate{
      * 这个主要处理menu的逻辑关系
      */
     public static function insertMenu($tableData){
+        if(empty($tableData)){
+            throw new \Exception('insertMenu Null');
+        }
         /*
          * 菜单数据有两种level=1,为头部导航，level=2为左边导航
          */
@@ -278,7 +282,19 @@ class MenuGenerate{
     public static function insertNodeAction($tableData)
     {
         $data = self::createNodeAction($tableData);
-        //注意没有查重
+        $map = array();
+        //如果一下数据在数据库的某条记录中已经存在，则认为重复了
+        $map['name'] = $data['name'];
+        $map['title'] = $data['title'];
+        $map['level'] = $data['level'];
+        $map['pid'] = $data['pid'];
+        $map['menu_id'] = $data['menu_id'];
+        //查重
+        $repeat = DB::table('qs_node')->where($map)->first();
+        //重复直接返回
+        if(!empty($repeat)){
+            return True;
+        }
         $id = DB::table('qs_node')->insertGetId($data);
         if(empty($id)){
             throw new \Exception($data['name'].'方法创建异常');
