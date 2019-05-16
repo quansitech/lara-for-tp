@@ -17,8 +17,10 @@ class MenuGenerate
     public static $module_id = 0; //模块id        node::level=2时pid使用这个值
 
     /**
-     * 多条记录插入->>二维数组
+     * 多条记录插入->>二维数组.
+     *
      * @param $data
+     *
      * @throws \Exception
      */
     public static function insertAll($data)
@@ -38,8 +40,10 @@ class MenuGenerate
     }
 
     /**
-     * 多条记录插入->>三维数组
+     * 多条记录插入->>三维数组.
+     *
      * @param $data
+     *
      * @throws \Exception
      */
     public static function insertNavigationAll($data)
@@ -124,7 +128,7 @@ class MenuGenerate
      * $tableData =array('title'=>);
      * $tablData = 'string';
      * 注意只有title是必填项
-     * 这个主要处理menu的逻辑关系
+     * 这个主要处理menu的逻辑关系.
      */
     public static function insertMenu($tableData)
     {
@@ -196,7 +200,7 @@ class MenuGenerate
      * 数据格式应为
      *$tableData =array('name'=>);
      * $tablData = 'string';
-     * 这个处理控制器的逻辑关系
+     * 这个处理控制器的逻辑关系.
      */
     public static function insertNodeContronller($tableData)
     {
@@ -222,7 +226,7 @@ class MenuGenerate
 
     /**
      * 创建node数据中的方法数据，传值为
-     * $data['name'] 和 $data['title'] 必须
+     * $data['name'] 和 $data['title'] 必须.
      */
     public static function insertNodeAction($tableData)
     {
@@ -250,7 +254,7 @@ class MenuGenerate
 
     /**
      *创建menu数据
-     * 负责数据生成
+     * 负责数据生成.
      */
     private static function createMenuDataArray($tableData)
     {
@@ -293,7 +297,7 @@ class MenuGenerate
     /**
      *创建node 控制器的数据
      * 数组$data['name'] 必须
-     * 如果是传string，则需要传控制器名，
+     * 如果是传string，则需要传控制器名，.
      */
     private static function createNodeController($data)
     {
@@ -319,7 +323,7 @@ class MenuGenerate
 
     /**
      *创建node action数据（即方法、函数）
-     * 注意必填项为$data['name']、$data['title']
+     * 注意必填项为$data['name']、$data['title'].
      */
     private static function createNodeAction($data)
     {
@@ -350,9 +354,11 @@ class MenuGenerate
 
         return $actionData;
     }
+
     /**
      * 使用insertNavigationAll生成则是这个方法删除.
-     *回滚部分
+     *回滚部分.
+     *
      * @param $data
      *
      * @throws \Exception
@@ -360,6 +366,7 @@ class MenuGenerate
     public static function insertNavigationAllRollback($data)
     {
         DB::beginTransaction();
+
         try {
             //取出每一个top_menu
             foreach ($data as $item) {
@@ -396,12 +403,14 @@ class MenuGenerate
         self::$menu_pid = 3; //菜单的pid     默认为平台
         self::$module_id = 1; //模块id       默认为admin
         DB::beginTransaction();
+
         try {
             foreach ($data as $key => $datum) {
                 self::handleMenuNode($key, $datum);
             }
         } catch (\Exception $e) {
             DB::rollBack();
+
             throw $e;
         }
         DB::commit();
@@ -479,7 +488,7 @@ class MenuGenerate
      */
     public static function handleNode($data)
     {
-        if(empty($data)){
+        if (empty($data)) {
             throw new \Exception('action handleNode() $data is null ');
         }
         //获取控制器

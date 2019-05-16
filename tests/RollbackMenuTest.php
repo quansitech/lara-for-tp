@@ -1,113 +1,116 @@
 <?php
+
 namespace Larafortp\Tests;
+
 use Illuminate\Support\Facades\DB;
 use Larafortp\MenuGenerate;
 
 class RollbackMenuTest extends TestCase
 {
     //回滚InsertAll
-    public function testRollbackInsertAll(){
-        $hardyData = array(
-            '新闻中心'=>array(
-                array(
-                    'name'=>'index',
-                    'title'=>'新闻分类',
-                    'controller'=>'NewsCate',
-                ),
-                array(
-                    'name'=>'index',
-                    'title'=>'内容管理',
-                    'controller'=>'News',
-                    'sort' => 1,
-                ),
-            ),
-            '佰特业务'=>array(
-                array(
-                    'name'=>'YWindex',
-                    'title'=>'封面及简介管理',
-                    'controller'=>'CoverStnopsis',
-                    'sort' => 1,
-                ),
-                array(
-                    'name'=>'index',
-                    'title'=>'服务对象管理',
-                    'controller'=>'ServiceCrowd',
-                    'sort' => 2,
-                ),
-                array(
-                    'name'=>'index',
-                    'title'=>'服务项目分类管理',
-                    'controller'=>'ServiceItems',
-                    'sort' => 3,
-                ),
-                array(
-                    'name'=>'index',
-                    'title'=>'服务项目内容',
-                    'controller'=>'ServiceContents',
-                    'sort' => 4,
-                ),
-            ),
-        );
+    public function testRollbackInsertAll()
+    {
+        $hardyData = [
+            '新闻中心'=> [
+                [
+                    'name'      => 'index',
+                    'title'     => '新闻分类',
+                    'controller'=> 'NewsCate',
+                ],
+                [
+                    'name'      => 'index',
+                    'title'     => '内容管理',
+                    'controller'=> 'News',
+                    'sort'      => 1,
+                ],
+            ],
+            '佰特业务'=> [
+                [
+                    'name'      => 'YWindex',
+                    'title'     => '封面及简介管理',
+                    'controller'=> 'CoverStnopsis',
+                    'sort'      => 1,
+                ],
+                [
+                    'name'      => 'index',
+                    'title'     => '服务对象管理',
+                    'controller'=> 'ServiceCrowd',
+                    'sort'      => 2,
+                ],
+                [
+                    'name'      => 'index',
+                    'title'     => '服务项目分类管理',
+                    'controller'=> 'ServiceItems',
+                    'sort'      => 3,
+                ],
+                [
+                    'name'      => 'index',
+                    'title'     => '服务项目内容',
+                    'controller'=> 'ServiceContents',
+                    'sort'      => 4,
+                ],
+            ],
+        ];
         //第一次插入
         MenuGenerate::insertAll($hardyData);
         //记录下“佰特业务”的id和其他信息
         $businessMenu = [
-            'id' => MenuGenerate::$menu_id,
+            'id'    => MenuGenerate::$menu_id,
             'title' => '佰特业务',
             'level' => 2,
         ];
         //记录下佰特业务最后一条控制器
         $nodeController = [
-            'id' => MenuGenerate::$node_pid,
-            'name' => 'ServiceContents',
-            'title' => 'ServiceContents',
-            'level' => 2,
-            'pid' => 1,
+            'id'      => MenuGenerate::$node_pid,
+            'name'    => 'ServiceContents',
+            'title'   => 'ServiceContents',
+            'level'   => 2,
+            'pid'     => 1,
             'menu_id' => 0,
         ];
         //记录下佰特业务最后一条节点
         $nodeAction = [
-            'name' => 'index',
-            'title' => '服务项目内容',
-            'level' => 3,
-            'pid' => MenuGenerate::$node_pid,
+            'name'    => 'index',
+            'title'   => '服务项目内容',
+            'level'   => 3,
+            'pid'     => MenuGenerate::$node_pid,
             'menu_id' => MenuGenerate::$menu_id,
         ];
         //获取数据库的总数
         $befor_menu = DB::table('qs_menu')->count();
         $befor_node = DB::table('qs_node')->count();
-        $data = array(
-            '首页'=>array(
-                array(
-                    'name'=>'index',
-                    'title'=>'首页轮播图',
-                    'sort' => 0,
-                    'controller'=>'IndexBanner',
-                    'status'=>1,
-                ),
-                array(
-                    'name'=>'index',
-                    'title'=>'首页信息配置',
-                    'sort' => 1,
-                    'controller'=>'IndexConfig',
-                    'status'=>1,
-                ),
-            ),
-            '社会影响力'=>array(
-                array(
-                    'name'=>'socialInfluence',
-                    'title'=>'社会影响力封面简介管理',
-                    'controller'=>'CoverStnopsis'
-                ),
-                array(
-                    'name'=>'index',
-                    'title'=>'成长故事',
-                    'sort' => 0,
-                    'controller'=>'Story',
-                    'status'=>1,
-                ),
-            ),
-        );
+        $data = [
+            '首页'=> [
+                [
+                    'name'      => 'index',
+                    'title'     => '首页轮播图',
+                    'sort'      => 0,
+                    'controller'=> 'IndexBanner',
+                    'status'    => 1,
+                ],
+                [
+                    'name'      => 'index',
+                    'title'     => '首页信息配置',
+                    'sort'      => 1,
+                    'controller'=> 'IndexConfig',
+                    'status'    => 1,
+                ],
+            ],
+            '社会影响力'=> [
+                [
+                    'name'      => 'socialInfluence',
+                    'title'     => '社会影响力封面简介管理',
+                    'controller'=> 'CoverStnopsis',
+                ],
+                [
+                    'name'      => 'index',
+                    'title'     => '成长故事',
+                    'sort'      => 0,
+                    'controller'=> 'Story',
+                    'status'    => 1,
+                ],
+            ],
+        ];
         MenuGenerate::insertAll($data);
         //确认数据库的变化
         $after_menu = DB::table('qs_menu')->count();
@@ -128,148 +131,150 @@ class RollbackMenuTest extends TestCase
         //节点（方法）
         $this->assertDatabaseHas('qs_node', $nodeAction);
     }
+
     //回滚insertNavigationAllRollback
-    public function testInsertNavigationAllRollback(){
+    public function testInsertNavigationAllRollback()
+    {
         //插入多个平台
-        $hardyData = array(
-            array(
-                'title'=>'平台2',//标题              (必填)
-                'module'=>'admin2',//模块英文名        (必填)
-                'module_name'=>'后台管理',//模块中文名   (必填)
-                'top_menu' => array(
-                    '新闻中心'=>array(
-                        array(
-                            'name'=>'index',
-                            'title'=>'新闻分类',
-                            'controller'=>'NewsCate',
-                        ),
-                        array(
-                            'name'=>'index',
-                            'title'=>'内容管理',
-                            'controller'=>'News',
-                            'sort' => 1,
-                        ),
-                    ),
-                    '佰特业务'=>array(
-                        array(
-                            'name'=>'YWindex',
-                            'title'=>'封面及简介管理',
-                            'controller'=>'CoverStnopsis',
-                            'sort' => 1,
-                        ),
-                        array(
-                            'name'=>'index',
-                            'title'=>'服务对象管理',
-                            'controller'=>'ServiceCrowd',
-                            'sort' => 2,
-                        ),
-                    ),
-                ),
-            ),
-            array(
-                'title'=>'多个平台',//标题              (必填)
-                'module'=>'NewsAdmin',//模块英文名        (必填)
-                'module_name'=>'后台管理',//模块中文名   (必填)
-                'top_menu' => array(
-                    '佰特业务'=>array(
-                        array(
-                            'name'=>'index',
-                            'title'=>'佰特业务分类',
-                            'controller'=>'NewsCate',
-                        ),
-                        array(
-                            'name'=>'index',
-                            'title'=>'内容管理',
-                            'controller'=>'News',
-                            'sort' => 1,
-                        ),
-                    ),
-                ),
-            ),
-        );
+        $hardyData = [
+            [
+                'title'      => '平台2', //标题              (必填)
+                'module'     => 'admin2', //模块英文名        (必填)
+                'module_name'=> '后台管理', //模块中文名   (必填)
+                'top_menu'   => [
+                    '新闻中心'=> [
+                        [
+                            'name'      => 'index',
+                            'title'     => '新闻分类',
+                            'controller'=> 'NewsCate',
+                        ],
+                        [
+                            'name'      => 'index',
+                            'title'     => '内容管理',
+                            'controller'=> 'News',
+                            'sort'      => 1,
+                        ],
+                    ],
+                    '佰特业务'=> [
+                        [
+                            'name'      => 'YWindex',
+                            'title'     => '封面及简介管理',
+                            'controller'=> 'CoverStnopsis',
+                            'sort'      => 1,
+                        ],
+                        [
+                            'name'      => 'index',
+                            'title'     => '服务对象管理',
+                            'controller'=> 'ServiceCrowd',
+                            'sort'      => 2,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'title'      => '多个平台', //标题              (必填)
+                'module'     => 'NewsAdmin', //模块英文名        (必填)
+                'module_name'=> '后台管理', //模块中文名   (必填)
+                'top_menu'   => [
+                    '佰特业务'=> [
+                        [
+                            'name'      => 'index',
+                            'title'     => '佰特业务分类',
+                            'controller'=> 'NewsCate',
+                        ],
+                        [
+                            'name'      => 'index',
+                            'title'     => '内容管理',
+                            'controller'=> 'News',
+                            'sort'      => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
         //第一次插入
         MenuGenerate::insertNavigationAll($hardyData);
         //记录下最后一个平台插入的信息
         $top_menu = [
-            'id' => MenuGenerate::$menu_pid,
+            'id'   => MenuGenerate::$menu_pid,
             'title'=> '多个平台',
             'level'=> 1,
-            'type'=> 'top_menu',
+            'type' => 'top_menu',
         ];
         //记录最后一个插入的菜单
         $businessMenu = [
-            'id' => MenuGenerate::$menu_id,
+            'id'    => MenuGenerate::$menu_id,
             'title' => '佰特业务',
             'level' => 2,
         ];
         //记录最后一个插入的模块
         $Module = [
-            'id' => MenuGenerate::$module_id,
-            'name' => 'NewsAdmin',
-            'title' => '后台管理',
-            'level' => 1,
-            'pid' => 0,
+            'id'      => MenuGenerate::$module_id,
+            'name'    => 'NewsAdmin',
+            'title'   => '后台管理',
+            'level'   => 1,
+            'pid'     => 0,
             'menu_id' => 0,
         ];
         //记录最后一个插入的控制器
         $nodeController = [
-            'id' => MenuGenerate::$node_pid,
-            'name' => 'News',
-            'title' => 'News',
-            'level' => 2,
-            'pid' => MenuGenerate::$module_id,
+            'id'      => MenuGenerate::$node_pid,
+            'name'    => 'News',
+            'title'   => 'News',
+            'level'   => 2,
+            'pid'     => MenuGenerate::$module_id,
             'menu_id' => 0,
         ];
         //记录下佰特业务最后一条节点
         $nodeAction = [
-            'name' => 'index',
-            'title' => '内容管理',
-            'level' => 3,
-            'pid' => MenuGenerate::$node_pid,
+            'name'    => 'index',
+            'title'   => '内容管理',
+            'level'   => 3,
+            'pid'     => MenuGenerate::$node_pid,
             'menu_id' => MenuGenerate::$menu_id,
         ];
         //获取数据库的总数
         $befor_menu = DB::table('qs_menu')->count();
         $befor_node = DB::table('qs_node')->count();
-        $data = array(
-            array(
-                'title'=>'多个平台',//标题              (必填)
-                'module'=>'NewsAdmin',//模块英文名        (必填)
-                'module_name'=>'后台管理',//模块中文名   (必填)
-                'top_menu' => array(
-                    '社会影响力'=>array(
-                        array(
-                            'name'=>'socialInfluence',
-                            'title'=>'社会影响力封面简介管理',
-                            'controller'=>'CoverStnopsis'
-                        ),
-                        array(
-                            'name'=>'index',
-                            'title'=>'成长故事',
-                            'sort' => 0,
-                            'controller'=>'Story',
-                            'status'=>1,
-                        ),
-                    ),
-                    '首页'=>array(
-                        array(
-                            'name'=>'index',
-                            'title'=>'首页轮播图',
-                            'sort' => 0,
-                            'controller'=>'IndexBanner',
-                            'status'=>1,
-                        ),
-                        array(
-                            'name'=>'index',
-                            'title'=>'首页信息配置',
-                            'sort' => 1,
-                            'controller'=>'IndexConfig',
-                            'status'=>1,
-                        ),
-                    ),
-                ),
-            ),
-        );
+        $data = [
+            [
+                'title'      => '多个平台', //标题              (必填)
+                'module'     => 'NewsAdmin', //模块英文名        (必填)
+                'module_name'=> '后台管理', //模块中文名   (必填)
+                'top_menu'   => [
+                    '社会影响力'=> [
+                        [
+                            'name'      => 'socialInfluence',
+                            'title'     => '社会影响力封面简介管理',
+                            'controller'=> 'CoverStnopsis',
+                        ],
+                        [
+                            'name'      => 'index',
+                            'title'     => '成长故事',
+                            'sort'      => 0,
+                            'controller'=> 'Story',
+                            'status'    => 1,
+                        ],
+                    ],
+                    '首页'=> [
+                        [
+                            'name'      => 'index',
+                            'title'     => '首页轮播图',
+                            'sort'      => 0,
+                            'controller'=> 'IndexBanner',
+                            'status'    => 1,
+                        ],
+                        [
+                            'name'      => 'index',
+                            'title'     => '首页信息配置',
+                            'sort'      => 1,
+                            'controller'=> 'IndexConfig',
+                            'status'    => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
         MenuGenerate::insertNavigationAll($data);
         //确认数据库的变化
         $after_menu = DB::table('qs_menu')->count();
