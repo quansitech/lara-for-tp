@@ -26,6 +26,7 @@ class MenuGenerate
     public function insertAll($data)
     {
         DB::beginTransaction();
+
         try {
             foreach ($data as $key => $datum) {
                 $this->insert($key, $datum);
@@ -384,6 +385,7 @@ class MenuGenerate
             }
         } catch (\Exception $e) {
             DB::rollBack();
+
             throw $e;
         }
         DB::commit();
@@ -401,12 +403,14 @@ class MenuGenerate
         $this->menu_pid = 3; //菜单的pid     默认为平台
         $this->module_id = 1; //模块id       默认为admin
         DB::beginTransaction();
+
         try {
             foreach ($data as $key => $datum) {
                 $this->handleMenuNode($key, $datum);
             }
         } catch (\Exception $e) {
             DB::rollBack();
+
             throw $e;
         }
         DB::commit();
@@ -415,7 +419,7 @@ class MenuGenerate
     public function handleMenuNode($title, $node)
     {
         $menu = $this->queryMenu($title, 2, $this->menu_pid);
-        if(empty($menu)){
+        if (empty($menu)) {
             throw new \Exception('回滚的菜单名不存在或者为空');
         }
         foreach ($node as $item) {
@@ -524,18 +528,22 @@ class MenuGenerate
     }
 
     /**
-     * 查询menu
+     * 查询menu.
+     *
      * @param $name 菜单名
      * @param $level  菜单等级
      * @param $pid 菜单的父节点
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
+     *
      * @throws \Exception
+     *
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
      */
     public function queryNode($name, $level, $pid)
     {
-        if(empty($name)){
+        if (empty($name)) {
             throw new \Exception('node name 为空');
         }
+
         return DB::table('qs_node')->where('name', $name)
             ->where('level', $level)
             ->where('pid', $pid)
@@ -586,7 +594,9 @@ class MenuGenerate
     {
         return DB::table('qs_node')->delete($id);
     }
-    public function resetInsertAll(){
+
+    public function resetInsertAll()
+    {
         $this->menu_id = 0;
         $this->node_pid = 0;
         $this->menu_pid = 0;

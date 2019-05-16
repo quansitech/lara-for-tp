@@ -7,7 +7,6 @@ use Larafortp\MenuGenerate;
 
 class RollbackMenuTest extends TestCase
 {
-
     //回滚InsertAll
     public function testRollbackInsertAll()
     {
