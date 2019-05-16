@@ -14,7 +14,6 @@ class MenuGenerateTest extends TestCase
     {
         $this->expectExceptionObject(new \Exception($message));
         MenuGenerate::insertAll($arrData);
-        $this->assertEquals(\Exception::class, $this->getExpectedException(), $message);
     }
 
     //下面用的是insertAll方法
