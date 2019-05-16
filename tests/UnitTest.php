@@ -2,7 +2,6 @@
 
 namespace Larafortp\Tests;
 
-use Illuminate\Support\Facades\DB;
 
 class UnitTest extends TestCase
 {
