@@ -3,14 +3,14 @@
 namespace Larafortp;
 
 use Illuminate\Support\Facades\DB;
-use Mockery\Exception;
 
 /*
  * 生成菜单和节点列表
  * 自动处理menu和node的关系
  *
  */
-class MenuGenerate{
+class MenuGenerate
+{
     public static $menu_id=0;//菜单的节点id      node::level=3时node::pid使用这个值，
     public static $node_pid=0;//父节点的id，即控制器的id的 node::level=3时pid使用这个值
     public static $menu_pid=0;//菜单的pid     menu::level=2时menu pid使用这个值（这个值产生于插入头部导航栏）
@@ -63,13 +63,14 @@ class MenuGenerate{
             );
          *
          */
-    public static function insertAll($data){
+    public static function insertAll($data)
+    {
         DB::beginTransaction();
         try{
             foreach ($data as $key => $datum) {
                 self::insert($key,$datum);
             }
-        } catch(\Exception $e){
+        } catch (\Exception $e){
             DB::rollBack();
             throw $e;
         }
@@ -109,7 +110,8 @@ class MenuGenerate{
      *
      *
      */
-    public static function insertNavigationAll($data){
+    public static function insertNavigationAll($data)
+    {
         DB::beginTransaction();
         try{
 
@@ -117,7 +119,7 @@ class MenuGenerate{
             foreach ($data as $item) {
                 self::insertNavigation($item);
             }
-        } catch(\Exception $e){
+        } catch (\Exception $e){
             DB::rollBack();
             throw $e;
         }
@@ -158,7 +160,8 @@ class MenuGenerate{
      );
      *
      */
-    public static function insert($menuData,$controlAction){
+    public static function insert($menuData,$controlAction)
+    {
         $controller = array();
         try{
             self::insertMenu($menuData);
@@ -186,7 +189,8 @@ class MenuGenerate{
      * 注意只有title是必填项
      * 这个主要处理menu的逻辑关系
      */
-    public static function insertMenu($tableData){
+    public static function insertMenu($tableData)
+    {
         if(empty($tableData)){
             throw new \Exception('insertMenu Null');
         }
@@ -226,7 +230,8 @@ class MenuGenerate{
         }
     }
     //处理模块的逻辑关系
-    public static function insertNodeModul($tableData){
+    public static function insertNodeModul($tableData)
+    {
         if(empty($tableData['module']) || empty($tableData['module_name'])){
             throw new \Exception('模块创建异常,模块名为空');
         }
@@ -254,7 +259,8 @@ class MenuGenerate{
      * $tablData = 'string';
      * 这个处理控制器的逻辑关系
      */
-    public static function insertNodeContronller($tableData){
+    public static function insertNodeContronller($tableData)
+    {
         //查找控制器是否存在
         //添加控制器
         if(!empty(self::$module_id)){

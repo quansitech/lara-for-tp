@@ -10,7 +10,8 @@ class MenuGenerateTest extends TestCase
     /*
      * 统一捕获异常
      */
-    public function captureException($arrData,$message){
+    public function captureException($arrData,$message)
+    {
         $this->expectExceptionObject(new \Exception($message));
         MenuGenerate::insertAll($arrData);
         $this->assertEquals(\Exception::class,$this->getExpectedException(),$message);
@@ -65,7 +66,8 @@ class MenuGenerateTest extends TestCase
         $this->captureException($data,'数据为空');
     }
     //节点名空
-    public function testAddNodeActionNmae(){
+    public function testAddNodeActionNmae()
+    {
         $data = array();
         $data['首页'] = array(
             array(
@@ -79,7 +81,8 @@ class MenuGenerateTest extends TestCase
         $this->captureException($data,'方法名名为空请检查');
     }
     //节点标题空异常
-    public function testAddNodeActionTitle(){
+    public function testAddNodeActionTitle()
+    {
         //标题
         $data = array();
         $data['首页'] = array(

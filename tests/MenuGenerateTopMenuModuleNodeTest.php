@@ -21,7 +21,6 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
     /**
      *     插入top_menu
      */
-    //异常
     public function testAddTopMenuException()
     {
         $data = array(
@@ -54,7 +53,6 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
     /**
      * 创建模块
      */
-    //异常
     public function testAddModuleException()
     {
         $data = array(
@@ -89,7 +87,6 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
     /**
      * 添加菜单
      */
-    //异常
     public function testAddBackMenuException()
     {
         $data = array(
@@ -122,7 +119,6 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
     /**
      * 添加控制器
      */
-    //异常
     public function testControllException()
     {
         $data = array(

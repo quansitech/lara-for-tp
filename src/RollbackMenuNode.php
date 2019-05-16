@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\DB;
  * 回滚所创建的菜单节点
  */
 
-class RollbackMenuNode{
+class RollbackMenuNode
+{
     private static $menu_pid=3;//菜单的pid     默认为平台
     private static $module_id=1;//模块id       默认为admin
     /*
@@ -44,7 +45,8 @@ class RollbackMenuNode{
      * @param $data
      * @throws \Exception
      */
-    public static function insertNavigationAllDelete($data){
+    public static function insertNavigationAllDelete($data)
+    {
         DB::beginTransaction();
         try{
 
@@ -63,7 +65,7 @@ class RollbackMenuNode{
                     self::deleteNode(self::$module_id);
                 }
             }
-        } catch(\Exception $e){
+        } catch (\Exception $e){
             DB::rollBack();
             throw $e;
         }
@@ -75,19 +77,21 @@ class RollbackMenuNode{
      * @param $data
      * @throws \Exception
      */
-    public static function insertAllDelete($data){
+    public static function insertAllDelete($data)
+    {
         DB::beginTransaction();
         try{
             foreach ($data as $key => $datum) {
                 self::handleMenuNode($key,$datum);
             }
-        } catch(\Exception $e){
+        } catch (\Exception $e){
             DB::rollBack();
             throw $e;
         }
         DB::commit();
     }
-    public static function handleMenuNode($title,$node){
+    public static function handleMenuNode($title,$node)
+    {
         $menu = self::queryMenu($title,2,self::$menu_pid);
         foreach ($node as $item) {
             self::handleNode($item);
@@ -102,7 +106,8 @@ class RollbackMenuNode{
      * @param $moduleName
      * @throws \Exception
      */
-    public static function setModuleId($moduleName){
+    public static function setModuleId($moduleName)
+    {
         $modu = self::queryNode($moduleName,1,0);
         if(!empty($modu)){
             self::$module_id = $modu->id;
@@ -116,7 +121,8 @@ class RollbackMenuNode{
      * @param $menuName
      * @throws \Exception
      */
-    public static function setMenuPID($menuName){
+    public static function setMenuPID($menuName)
+    {
         $modu = self::queryMenu($menuName,1,0);
         if(!empty($modu)){
             self::$menu_pid = $modu->id;
@@ -130,7 +136,8 @@ class RollbackMenuNode{
      * @param $menuName
      * @throws \Exception
      */
-    public static function handleMenu($menuName){
+    public static function handleMenu($menuName)
+    {
         $menu = self::queryMenu($menuName,2,self::$menu_pid);
         if(!empty($menu)){
             self::deleteMenu($menu->id);
@@ -144,7 +151,8 @@ class RollbackMenuNode{
      * @param $data  这是一个数组
      * @throws \Exception
      */
-    public static function handleNode($data){
+    public static function handleNode($data)
+    {
 //        $data=array(
 //            'name'=>'方法名',       //（必填）
 //            'title'=>'节点名称',    //（必填）
@@ -178,7 +186,8 @@ class RollbackMenuNode{
      * @param $pid
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
      */
-    public static function queryMenu($title,$level,$pid){
+    public static function queryMenu($title,$level,$pid)
+    {
         return DB::table('qs_menu')->where('title',$title)
             ->where('level',$level)
             ->where('pid',$pid)
@@ -191,7 +200,8 @@ class RollbackMenuNode{
      * @param $pid 菜单的父节点
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
      */
-    public static function queryNode($name,$level,$pid){
+    public static function queryNode($name,$level,$pid)
+    {
       return DB::table('qs_node')->where('name',$name)
           ->where('level',$level)
           ->where('pid',$pid)
@@ -202,7 +212,8 @@ class RollbackMenuNode{
      * @param $pid
      * @return int
      */
-    public static function countChildrenMenu($pid){
+    public static function countChildrenMenu($pid)
+    {
         return DB::table('qs_menu')->where('pid',$pid)->count();
     }
 
@@ -210,7 +221,8 @@ class RollbackMenuNode{
      * @param $pid
      * @return int
      */
-    public static function countChildrenNode($pid){
+    public static function countChildrenNode($pid)
+    {
         return DB::table('qs_node')->where('pid',$pid)->count();
     }
 
@@ -218,21 +230,24 @@ class RollbackMenuNode{
      * @param $pid
      * @return int
      */
-    public static function countMenuChildrenNode($menu_id){
+    public static function countMenuChildrenNode($menu_id)
+    {
         return DB::table('qs_node')->where('menu_id',$menu_id)->count();
     }
     /**删除菜单
      * @param $id
      * @return int
      */
-    public static function deleteMenu($id){
+    public static function deleteMenu($id)
+    {
         return DB::table('qs_menu')->delete($id);
     }
     /**删除节点
      * @param $id 节点id
      * @return int
      */
-    public static function deleteNode($id){
+    public static function deleteNode($id)
+    {
         return DB::table('qs_node')->delete($id);
     }
 
