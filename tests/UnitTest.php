@@ -2,7 +2,6 @@
 
 namespace Larafortp\Tests;
 
-
 class UnitTest extends TestCase
 {
     public function testR()

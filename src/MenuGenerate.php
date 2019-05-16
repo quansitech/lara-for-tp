@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
  */
 class MenuGenerate
 {
-    public static $menu_id=0;//菜单的节点id      node::level=3时node::pid使用这个值，
-    public static $node_pid=0;//父节点的id，即控制器的id的 node::level=3时pid使用这个值
-    public static $menu_pid=0;//菜单的pid     menu::level=2时menu pid使用这个值（这个值产生于插入头部导航栏）
-    public static $module_id=0;//模块id        node::level=2时pid使用这个值
+    public static $menu_id = 0; //菜单的节点id      node::level=3时node::pid使用这个值，
+    public static $node_pid = 0; //父节点的id，即控制器的id的 node::level=3时pid使用这个值
+    public static $menu_pid = 0; //菜单的pid     menu::level=2时menu pid使用这个值（这个值产生于插入头部导航栏）
+    public static $module_id = 0; //模块id        node::level=2时pid使用这个值
 
         /*
          * 多条插入，一般只用这个函数
@@ -66,16 +66,19 @@ class MenuGenerate
     public static function insertAll($data)
     {
         DB::beginTransaction();
-        try{
+
+        try {
             foreach ($data as $key => $datum) {
-                self::insert($key,$datum);
+                self::insert($key, $datum);
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
+
             throw $e;
         }
         DB::commit();
     }
+
     /*
      *
      *
@@ -113,20 +116,23 @@ class MenuGenerate
     public static function insertNavigationAll($data)
     {
         DB::beginTransaction();
-        try{
+
+        try {
 
             //取出每一个top_menu
             foreach ($data as $item) {
                 self::insertNavigation($item);
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
+
             throw $e;
         }
         DB::commit();
     }
 
-    public static function insertNavigation($data){
+    public static function insertNavigation($data)
+    {
         //这个方法处理数据的
         $data['type'] = 'top_menu';
         //等级为1
@@ -141,9 +147,10 @@ class MenuGenerate
             $menuData['title'] = $key;
             $menuData['level'] = 2;
             $menuData['pid'] = self::$menu_pid;
-            self::insert($menuData,$item);
+            self::insert($menuData, $item);
         }
     }
+
     /*
      * $menuData 为字符串或者数组
      * $contronller 二维数组
@@ -160,24 +167,25 @@ class MenuGenerate
      );
      *
      */
-    public static function insert($menuData,$controlAction)
+    public static function insert($menuData, $controlAction)
     {
-        $controller = array();
-        try{
+        $controller = [];
+
+        try {
             self::insertMenu($menuData);
             foreach ($controlAction as $item) {
-                if(empty($item)){
+                if (empty($item)) {
                     throw new \Exception('数据为空');
                 }
-                $controller['name'] =  $item['controller'];
-                if(!empty(self::$module_id)){
-                    $controller['pid'] =  self::$module_id;
-                    $controller['menu_id'] =  0;
+                $controller['name'] = $item['controller'];
+                if (!empty(self::$module_id)) {
+                    $controller['pid'] = self::$module_id;
+                    $controller['menu_id'] = 0;
                 }
                 self::insertNodeContronller($controller);
                 self::insertNodeAction($item);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -191,53 +199,54 @@ class MenuGenerate
      */
     public static function insertMenu($tableData)
     {
-        if(empty($tableData)){
+        if (empty($tableData)) {
             throw new \Exception('insertMenu Null');
         }
         /*
          * 菜单数据有两种level=1,为头部导航，level=2为左边导航
          */
-        if(is_array($tableData)){
+        if (is_array($tableData)) {
             //获取数据
-            if(isset($tableData['level'])&&$tableData['level']==1){
+            if (isset($tableData['level']) && $tableData['level'] == 1) {
                 $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 1)->first();
-            }else{
-                if(!empty(self::$menu_pid)){
+            } else {
+                if (!empty(self::$menu_pid)) {
                     $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 2)->where('pid', self::$menu_pid)->first();
-                }else{
+                } else {
                     $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 2)->first();
                 }
             }
-            if(isset($firstData->level) && $firstData->level==1){
+            if (isset($firstData->level) && $firstData->level == 1) {
                 self::$menu_pid = $firstData->id;
-            }elseif (isset($firstData->level) && $firstData->level==2){
+            } elseif (isset($firstData->level) && $firstData->level == 2) {
                 self::$menu_id = $firstData->id;
-            }else{
+            } else {
                 $data = self::createMenuDataArray($tableData);
                 self::$menu_id = DB::table('qs_menu')->insertGetId($data);
-                if($data['level']==1){
+                if ($data['level'] == 1) {
                     self::$menu_pid = self::$menu_id;
                 }
             }
-        }else{
+        } else {
             $firstData = DB::table('qs_menu')->where('title', $tableData)->where('level', 2)->first();
-            if(empty($firstData)){
+            if (empty($firstData)) {
                 $data = self::createMenuDataArray($tableData);
                 self::$menu_id = DB::table('qs_menu')->insertGetId($data);
-            }else{
+            } else {
                 self::$menu_id = $firstData->id;
             }
         }
     }
+
     //处理模块的逻辑关系
     public static function insertNodeModul($tableData)
     {
-        if(empty($tableData['module']) || empty($tableData['module_name'])){
+        if (empty($tableData['module']) || empty($tableData['module_name'])) {
             throw new \Exception('模块创建异常,模块名为空');
         }
         $firstData = DB::table('qs_node')->where('name', $tableData['module'])->where('level', 1)->first();
-        if(empty($firstData)){
-            $data = array();
+        if (empty($firstData)) {
+            $data = [];
             $data['name'] = $tableData['module'];
             $data['title'] = $tableData['module_name'];
             $data['sort'] = 0;
@@ -248,10 +257,11 @@ class MenuGenerate
             $data['remark'] = '';
             $data['status'] = 1;
             self::$module_id = DB::table('qs_node')->insertGetId($data);
-        }else{
+        } else {
             self::$module_id = $firstData->id;
         }
     }
+
     /*
      * 创建node数据中的控制器数据，
      * 数据格式应为
@@ -263,20 +273,20 @@ class MenuGenerate
     {
         //查找控制器是否存在
         //添加控制器
-        if(!empty(self::$module_id)){
+        if (!empty(self::$module_id)) {
             $tableData['pid'] = self::$module_id;
-        }else{
-            $tableData['pid'] =1;
+        } else {
+            $tableData['pid'] = 1;
         }
         $data = self::createNodeController($tableData);
-        if(!empty(self::$module_id)){
+        if (!empty(self::$module_id)) {
             $firstData = DB::table('qs_node')->where('name', $data['name'])->where('pid', self::$module_id)->where('level', 2)->first();
-        }else{
+        } else {
             $firstData = DB::table('qs_node')->where('name', $data['name'])->where('level', 2)->where('pid', 1)->first();
         }
-        if(!empty($firstData)){
+        if (!empty($firstData)) {
             self::$node_pid = $firstData->id;
-        }else{
+        } else {
             self::$node_pid = DB::table('qs_node')->insertGetId($data);
         }
     }
@@ -288,7 +298,7 @@ class MenuGenerate
     public static function insertNodeAction($tableData)
     {
         $data = self::createNodeAction($tableData);
-        $map = array();
+        $map = [];
         //如果一下数据在数据库的某条记录中已经存在，则认为重复了
         $map['name'] = $data['name'];
         $map['title'] = $data['title'];
@@ -298,13 +308,13 @@ class MenuGenerate
         //查重
         $repeat = DB::table('qs_node')->where($map)->first();
         //重复直接返回
-        if(!empty($repeat)){
-            return True;
+        if (!empty($repeat)) {
+            return true;
         }
         $id = DB::table('qs_node')->insertGetId($data);
-        if(empty($id)){
+        if (empty($id)) {
             throw new \Exception($data['name'].'方法创建异常');
-        }else{
+        } else {
             return $id;
         }
     }
@@ -318,23 +328,21 @@ class MenuGenerate
         $data = [];
         if (is_array($tableData)) {
             //检验标题
-            if(isset($tableData['title']) && !empty($tableData['title'])){
+            if (isset($tableData['title']) && !empty($tableData['title'])) {
                 $data['title'] = $tableData['title'];
-            }else{
+            } else {
                 throw new \Exception('菜单title为空请检查');
             }
-            $data['sort']  = isset($tableData['sort'])? (int)$tableData['sort'] : 0;
-            $data['icon']  = isset($tableData['icon'])? $tableData['icon'] : '';
-            $data['type']  = (isset($tableData['type']) && !empty($tableData['type']))? $tableData['type'] : 'backend_menu';
-            $data['url']  = isset($tableData['url'])? $tableData['url'] : '';
-            $data['pid']  = isset($tableData['pid'])? $tableData['pid'] : self::$menu_pid;
-            $data['module']  = isset($tableData['module'])? $tableData['module'] : '';
-            $data['status']  = isset($tableData['status'])? (int)$tableData['status'] : 1;
-            $data['level']  = isset($tableData['level'])? (int)$tableData['level'] : 2;
-        }
-        else
-        {
-            if(empty($tableData)){
+            $data['sort'] = isset($tableData['sort']) ? (int) $tableData['sort'] : 0;
+            $data['icon'] = isset($tableData['icon']) ? $tableData['icon'] : '';
+            $data['type'] = (isset($tableData['type']) && !empty($tableData['type'])) ? $tableData['type'] : 'backend_menu';
+            $data['url'] = isset($tableData['url']) ? $tableData['url'] : '';
+            $data['pid'] = isset($tableData['pid']) ? $tableData['pid'] : self::$menu_pid;
+            $data['module'] = isset($tableData['module']) ? $tableData['module'] : '';
+            $data['status'] = isset($tableData['status']) ? (int) $tableData['status'] : 1;
+            $data['level'] = isset($tableData['level']) ? (int) $tableData['level'] : 2;
+        } else {
+            if (empty($tableData)) {
                 throw new \Exception('错误，菜单数据为空');
             }
             $data = [
@@ -362,21 +370,20 @@ class MenuGenerate
     {
         $ControllerData = [];
         //检验标题
-        if(isset($data['name']) && !empty($data['name'])){
+        if (isset($data['name']) && !empty($data['name'])) {
             $ControllerData['name'] = $data['name'];
-        }else{
+        } else {
             throw new \Exception('控制器名为空请检查');
         }
-        $ControllerData['title']  = $ControllerData['name'];
-        $ControllerData['status']  = isset($data['status'])? (int)$data['status'] : 1;
-        $ControllerData['remark']  = isset($data['remark'])? $data['remark'] : '';
-        $ControllerData['sort']  = isset($data['sort'])? (int)$data['sort'] : 0;
-        $ControllerData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : (empty(self::$node_pid)?1:self::$node_pid);
-        $ControllerData['level']  = isset($data['level'])? (int)$data['level'] : 2;
-        $ControllerData['menu_id']  = isset($data['menu_id'])? (int)$data['menu_id'] : (empty(self::$menu_pid)? 0:self::$menu_pid);
-        $ControllerData['icon']  = isset($data['icon'])? $data['icon'] : '';
-        $ControllerData['url']  = isset($data['url'])? $data['url'] : '';
-
+        $ControllerData['title'] = $ControllerData['name'];
+        $ControllerData['status'] = isset($data['status']) ? (int) $data['status'] : 1;
+        $ControllerData['remark'] = isset($data['remark']) ? $data['remark'] : '';
+        $ControllerData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
+        $ControllerData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : (empty(self::$node_pid) ? 1 : self::$node_pid);
+        $ControllerData['level'] = isset($data['level']) ? (int) $data['level'] : 2;
+        $ControllerData['menu_id'] = isset($data['menu_id']) ? (int) $data['menu_id'] : (empty(self::$menu_pid) ? 0 : self::$menu_pid);
+        $ControllerData['icon'] = isset($data['icon']) ? $data['icon'] : '';
+        $ControllerData['url'] = isset($data['url']) ? $data['url'] : '';
 
         return $ControllerData;
     }
@@ -390,25 +397,25 @@ class MenuGenerate
         $actionData = [];
         if (is_array($data) && !empty($data)) {
             //检验标题
-            if((isset($data['name']) && !empty($data['name']))){
+            if ((isset($data['name']) && !empty($data['name']))) {
                 $actionData['name'] = $data['name'];
-            }else{
+            } else {
                 throw new \Exception('方法名名为空请检查');
             }
-            if(isset($data['title']) && !empty($data['title'])){
-                $actionData['title']  = $data['title'];
-            }else{
+            if (isset($data['title']) && !empty($data['title'])) {
+                $actionData['title'] = $data['title'];
+            } else {
                 throw new \Exception('标题为空请检查');
             }
-            $actionData['status']  = (isset($data['status']) && !empty($data['status']))? (int)$data['status'] : 1;
-            $actionData['remark']  = isset($data['remark'])? $data['remark'] : '';
-            $actionData['sort']  = isset($data['sort']) ? (int)$data['sort'] : 0;
-            $actionData['pid']  = (isset($data['pid']) && !empty($data['pid']))? (int)$data['pid'] : self::$node_pid;
-            $actionData['level']  = (isset($data['level'])  && !empty($data['level']))? (int)$data['level'] : 3;
-            $actionData['menu_id']  = (isset($data['menu_id']) && !empty($data['menu_id'])) ? (int)$data['menu_id'] : self::$menu_id;
-            $actionData['icon']  = isset($data['icon'])? $data['icon'] : '';
-            $actionData['url']  = isset($data['url'])? $data['url'] : '';
-        }else{
+            $actionData['status'] = (isset($data['status']) && !empty($data['status'])) ? (int) $data['status'] : 1;
+            $actionData['remark'] = isset($data['remark']) ? $data['remark'] : '';
+            $actionData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
+            $actionData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : self::$node_pid;
+            $actionData['level'] = (isset($data['level']) && !empty($data['level'])) ? (int) $data['level'] : 3;
+            $actionData['menu_id'] = (isset($data['menu_id']) && !empty($data['menu_id'])) ? (int) $data['menu_id'] : self::$menu_id;
+            $actionData['icon'] = isset($data['icon']) ? $data['icon'] : '';
+            $actionData['url'] = isset($data['url']) ? $data['url'] : '';
+        } else {
             throw new \Exception('错误，方法的数据格式不正确');
         }
 
