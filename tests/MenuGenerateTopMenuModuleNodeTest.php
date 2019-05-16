@@ -13,7 +13,8 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
     public function captureException($arrData, $message)
     {
         $this->expectExceptionObject(new \Exception($message));
-        MenuGenerate::insertNavigationAll($arrData);
+        $menu = new MenuGenerate();
+        $menu->insertNavigationAll($arrData);
         $this->assertEquals(\Exception::class, $this->getExpectedException(), $message);
     }
 
@@ -245,17 +246,18 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertNavigationAll($data);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data);
         //节点
-        $this->assertDatabaseHas('qs_node', ['name' => 'index', 'title' => '测试新闻中心', 'level' => 3, 'pid'=>MenuGenerate::$node_pid, 'menu_id'=>MenuGenerate::$menu_id]);
+        $this->assertDatabaseHas('qs_node', ['name' => 'index', 'title' => '测试新闻中心', 'level' => 3, 'pid'=>$menuGener->node_pid, 'menu_id'=>$menuGener->menu_id]);
         //控制器
-        $this->assertDatabaseHas('qs_node', ['id' => MenuGenerate::$node_pid, 'name' => 'NewsController', 'title' => 'NewsController', 'level' => 2, 'pid'=>MenuGenerate::$module_id, 'menu_id'=>0]);
+        $this->assertDatabaseHas('qs_node', ['id' => $menuGener->node_pid, 'name' => 'NewsController', 'title' => 'NewsController', 'level' => 2, 'pid'=>$menuGener->module_id, 'menu_id'=>0]);
         //菜单
-        $this->assertDatabaseHas('qs_menu', ['id' => MenuGenerate::$menu_id, 'title' => '新闻中心', 'level' => 2, 'pid'=>MenuGenerate::$menu_pid]);
+        $this->assertDatabaseHas('qs_menu', ['id' => $menuGener->menu_id, 'title' => '新闻中心', 'level' => 2, 'pid'=>$menuGener->menu_pid]);
         //模块
-        $this->assertDatabaseHas('qs_node', ['id' => MenuGenerate::$module_id, 'name' => 'newsAdmin', 'title' => '后台管理', 'level' => 1, 'pid'=>0, 'menu_id'=>0]);
+        $this->assertDatabaseHas('qs_node', ['id' => $menuGener->module_id, 'name' => 'newsAdmin', 'title' => '后台管理', 'level' => 1, 'pid'=>0, 'menu_id'=>0]);
         //top_menu
-        $this->assertDatabaseHas('qs_menu', ['id' => MenuGenerate::$menu_pid, 'title' => '平台2', 'type'=>'top_menu', 'level' => 1, 'pid'=>0, 'module'=>'newsAdmin']);
+        $this->assertDatabaseHas('qs_menu', ['id' => $menuGener->menu_pid, 'title' => '平台2', 'type'=>'top_menu', 'level' => 1, 'pid'=>0, 'module'=>'newsAdmin']);
     }
 
     /**
@@ -309,10 +311,12 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertNavigationAll($data);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data);
         $befor_menu = DB::table('qs_menu')->count();
         $befor_node = DB::table('qs_node')->count();
-        MenuGenerate::insertNavigationAll($data);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data);
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         $this->assertEquals($befor_menu, $after_menu);
@@ -372,10 +376,12 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertNavigationAll($data);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data);
         $befor_menu = DB::table('qs_menu')->count();
         $befor_node = DB::table('qs_node')->count();
-        MenuGenerate::insertNavigationAll($data2);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data2);
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         $this->assertEquals($befor_menu, $after_menu);
@@ -425,10 +431,12 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertNavigationAll($data);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data);
         $befor_menu = DB::table('qs_menu')->count();
         $befor_node = DB::table('qs_node')->count();
-        MenuGenerate::insertNavigationAll($data2);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data2);
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         //新增一条菜单记录
@@ -480,10 +488,12 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertNavigationAll($data);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data);
         $befor_menu = DB::table('qs_menu')->count();
         $befor_node = DB::table('qs_node')->count();
-        MenuGenerate::insertNavigationAll($data2);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertNavigationAll($data2);
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         //新增一条菜单记录

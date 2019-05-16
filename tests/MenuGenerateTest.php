@@ -13,7 +13,8 @@ class MenuGenerateTest extends TestCase
     public function captureException($arrData, $message)
     {
         $this->expectExceptionObject(new \Exception($message));
-        MenuGenerate::insertAll($arrData);
+        $menu = new MenuGenerate();
+        $menu->insertAll($arrData);
     }
 
     //下面用的是insertAll方法
@@ -127,7 +128,8 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData);
+        $menuGener = new MenuGenerate();
+        $menuGener->insertAll($menuData);
         //菜单
         $this->assertDatabaseHas('qs_menu', ['title' => '测试模块', 'type' => 'backend_menu', 'level' => 2]);
         //控制器
@@ -135,7 +137,7 @@ class MenuGenerateTest extends TestCase
         //模块
         //这种方式插入，模块默认是admin
         //
-        $this->assertDatabaseHas('qs_node', ['name' => 'index', 'title' =>'集团机构',  'level' => 3, 'pid'=>MenuGenerate::$node_pid]);
+        $this->assertDatabaseHas('qs_node', ['name' => 'index', 'title' =>'集团机构',  'level' => 3, 'pid'=>$menuGener->node_pid]);
     }
 
     /**
@@ -186,9 +188,11 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData);
         $befor_menu = DB::table('qs_menu')->count();
-        MenuGenerate::insertAll($menuData2);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData2);
         $after_menu = DB::table('qs_menu')->count();
         $this->assertEquals($befor_menu, $after_menu);
         //认证不等
@@ -211,7 +215,8 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData3);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData3);
         $after_menu = DB::table('qs_menu')->count();
         $this->assertNotEquals($befor_menu, $after_menu);
     }
@@ -269,9 +274,11 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData);
         $befor = DB::table('qs_node')->count();
-        MenuGenerate::insertAll($menuData2);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData2);
         $after = DB::table('qs_node')->count();
         $this->assertEquals($befor, $after);
         //认证不等
@@ -284,7 +291,8 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData3);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData3);
         $after = DB::table('qs_node')->count();
         $this->assertNotEquals($befor, $after);
     }
@@ -342,9 +350,11 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData);
         $befor = DB::table('qs_node')->count();
-        MenuGenerate::insertAll($menuData2);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData2);
         $after = DB::table('qs_node')->count();
         $this->assertEquals($befor, $after);
         //认证不等
@@ -357,7 +367,8 @@ class MenuGenerateTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($menuData3);
+        $menu = new MenuGenerate();
+        $menu->insertAll($menuData3);
         $after = DB::table('qs_node')->count();
         $this->assertNotEquals($befor, $after);
     }

@@ -7,6 +7,7 @@ use Larafortp\MenuGenerate;
 
 class RollbackMenuTest extends TestCase
 {
+
     //回滚InsertAll
     public function testRollbackInsertAll()
     {
@@ -52,16 +53,17 @@ class RollbackMenuTest extends TestCase
             ],
         ];
         //第一次插入
-        MenuGenerate::insertAll($hardyData);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertAll($hardyData);
         //记录下“佰特业务”的id和其他信息
         $businessMenu = [
-            'id'    => MenuGenerate::$menu_id,
+            'id'    => $menuGenerate->menu_id,
             'title' => '佰特业务',
             'level' => 2,
         ];
         //记录下佰特业务最后一条控制器
         $nodeController = [
-            'id'      => MenuGenerate::$node_pid,
+            'id'      => $menuGenerate->node_pid,
             'name'    => 'ServiceContents',
             'title'   => 'ServiceContents',
             'level'   => 2,
@@ -73,8 +75,8 @@ class RollbackMenuTest extends TestCase
             'name'    => 'index',
             'title'   => '服务项目内容',
             'level'   => 3,
-            'pid'     => MenuGenerate::$node_pid,
-            'menu_id' => MenuGenerate::$menu_id,
+            'pid'     => $menuGenerate->node_pid,
+            'menu_id' => $menuGenerate->menu_id,
         ];
         //获取数据库的总数
         $befor_menu = DB::table('qs_menu')->count();
@@ -111,14 +113,16 @@ class RollbackMenuTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertAll($data);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertAll($data);
         //确认数据库的变化
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         $this->assertNotEquals($befor_menu, $after_menu);
         $this->assertNotEquals($befor_node, $after_node);
         //确认回滚，数据条数不多不少
-        MenuGenerate::insertAllRollback($data);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertAllRollback($data);
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         $this->assertEquals($befor_menu, $after_menu);
@@ -193,23 +197,24 @@ class RollbackMenuTest extends TestCase
             ],
         ];
         //第一次插入
-        MenuGenerate::insertNavigationAll($hardyData);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertNavigationAll($hardyData);
         //记录下最后一个平台插入的信息
         $top_menu = [
-            'id'   => MenuGenerate::$menu_pid,
+            'id'   => $menuGenerate->menu_pid,
             'title'=> '多个平台',
             'level'=> 1,
             'type' => 'top_menu',
         ];
         //记录最后一个插入的菜单
         $businessMenu = [
-            'id'    => MenuGenerate::$menu_id,
+            'id'    => $menuGenerate->menu_id,
             'title' => '佰特业务',
             'level' => 2,
         ];
         //记录最后一个插入的模块
         $Module = [
-            'id'      => MenuGenerate::$module_id,
+            'id'      => $menuGenerate->module_id,
             'name'    => 'NewsAdmin',
             'title'   => '后台管理',
             'level'   => 1,
@@ -218,11 +223,11 @@ class RollbackMenuTest extends TestCase
         ];
         //记录最后一个插入的控制器
         $nodeController = [
-            'id'      => MenuGenerate::$node_pid,
+            'id'      => $menuGenerate->node_pid,
             'name'    => 'News',
             'title'   => 'News',
             'level'   => 2,
-            'pid'     => MenuGenerate::$module_id,
+            'pid'     => $menuGenerate->module_id,
             'menu_id' => 0,
         ];
         //记录下佰特业务最后一条节点
@@ -230,8 +235,8 @@ class RollbackMenuTest extends TestCase
             'name'    => 'index',
             'title'   => '内容管理',
             'level'   => 3,
-            'pid'     => MenuGenerate::$node_pid,
-            'menu_id' => MenuGenerate::$menu_id,
+            'pid'     => $menuGenerate->node_pid,
+            'menu_id' => $menuGenerate->menu_id,
         ];
         //获取数据库的总数
         $befor_menu = DB::table('qs_menu')->count();
@@ -275,14 +280,16 @@ class RollbackMenuTest extends TestCase
                 ],
             ],
         ];
-        MenuGenerate::insertNavigationAll($data);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertNavigationAll($data);
         //确认数据库的变化
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         $this->assertNotEquals($befor_menu, $after_menu);
         $this->assertNotEquals($befor_node, $after_node);
         //确认回滚，数据条数不多不少
-        MenuGenerate::insertNavigationAllRollback($data);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertNavigationAllRollback($data);
         $after_menu = DB::table('qs_menu')->count();
         $after_node = DB::table('qs_node')->count();
         $this->assertEquals($befor_menu, $after_menu);
