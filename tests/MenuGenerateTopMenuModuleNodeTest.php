@@ -15,7 +15,6 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
         $this->expectExceptionObject(new \Exception($message));
         $menu = new MenuGenerate();
         $menu->insertNavigationAll($arrData);
-        $this->assertEquals(\Exception::class, $this->getExpectedException(), $message);
     }
 
     //多层级插入  -> MenuGenerate测试列表
