@@ -38,6 +38,7 @@ migrate文件必须存放在lara/database/migrations下,在lara目录下的.env�
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Larafortp\MenuGenerate;
 
 class CreateSeed extends Migration
 {
@@ -96,6 +97,7 @@ class CreateSeed extends Migration
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Larafortp\MenuGenerate;
 
 class CreateSeed extends Migration
 {
