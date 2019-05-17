@@ -497,7 +497,7 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
         $after_node = DB::table('qs_node')->count();
         //新增一条菜单记录
         $this->assertTrue(($after_menu - $befor_menu) === 1);
-        //新增一个节点，不会新增控制器，因为模块和控制器一样
+        //新增一个节点，控制器
         $this->assertTrue(($after_node - $befor_node) === 2);
     }
 }
