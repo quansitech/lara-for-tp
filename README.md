@@ -73,7 +73,8 @@ class CreateSeed extends Migration
      */
     public function up()
     {
-        \Larafortp\MenuGenerate::insertNavigationAll($this->menuData);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertNavigationAll($this->menuData);
     }
 
     /**
@@ -83,7 +84,8 @@ class CreateSeed extends Migration
      */
     public function down()
     {
-        \Larafortp\RollbackMenuNode::insertNavigationAllDelete($this->menuData);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertNavigationAllRollback($this->menuData);
     }
 }
 ```
@@ -127,7 +129,8 @@ class CreateSeed extends Migration
      */
     public function up()
     {
-        \Larafortp\MenuGenerate::insertAll($this->menuData);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertAll($this->menuData);
     }
 
     /**
@@ -137,7 +140,8 @@ class CreateSeed extends Migration
      */
     public function down()
     {
-        \Larafortp\RollbackMenuNode::insertAllDelete($this->menuData);
+        $menuGenerate = new MenuGenerate();
+        $menuGenerate->insertAllRollback($this->menuData);
     }
 }
 
