@@ -58,6 +58,7 @@ class TestCase extends DuskTestCase
 
     public function setUp() : void
     {
+        static::useChromedriver("/usr/local/bin/chromedriver");
         static::startChromeDriver();
 
         parent::setUp();
