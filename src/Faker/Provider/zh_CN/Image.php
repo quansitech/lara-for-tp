@@ -1,23 +1,23 @@
 <?php
+
 namespace Faker\Provider\zh_CN;
 
 use Faker\Provider\Base;
 
-class Image extends Base{
-
-    protected static $categories = array(
-        'animals', 'arch', 'nature', 'people', 'tech'
-    );
+class Image extends Base
+{
+    protected static $categories = [
+        'animals', 'arch', 'nature', 'people', 'tech',
+    ];
 
     protected static $filter = [
-        'grayscale', 'sepia'
+        'grayscale', 'sepia',
     ];
 
     public static function imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $filter = null)
     {
-        $baseUrl = "http://placeimg.com/";
+        $baseUrl = 'http://placeimg.com/';
         $url = "{$width}/{$height}/";
-
 
         if ($category) {
             if (!in_array($category, static::$categories)) {
@@ -34,14 +34,14 @@ class Image extends Base{
         }
 
         if ($randomize) {
-            $url .= '?' . static::randomNumber(5, true);
+            $url .= '?'.static::randomNumber(5, true);
         }
 
-        return $baseUrl . $url;
+        return $baseUrl.$url;
     }
 
     /**
-     * Download a remote random image to disk and return its location
+     * Download a remote random image to disk and return its location.
      *
      * Requires curl, or allow_url_fopen to be on in php.ini.
      *
@@ -58,8 +58,8 @@ class Image extends Base{
         // Generate a random filename. Use the server address so that a file
         // generated at the same time on a different server won't have a collision.
         $name = md5(uniqid(empty($_SERVER['SERVER_ADDR']) ? '' : $_SERVER['SERVER_ADDR'], true));
-        $filename = $name .'.jpg';
-        $filepath = $dir . DIRECTORY_SEPARATOR . $filename;
+        $filename = $name.'.jpg';
+        $filepath = $dir.DIRECTORY_SEPARATOR.$filename;
 
         $url = static::imageUrl($width, $height, $category, $randomize, $filter);
 
