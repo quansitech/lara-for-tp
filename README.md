@@ -152,5 +152,7 @@ class CreateSeed extends Migration
 ### Faker
 laravel默认得Faker工具不支持zh_CN简体文本的生成，修复了该问题
 
+Faker的image生成使用的[lorempixel](http://lorempixel.com/)，生成某些尺寸的图片时很容易出现烂图。因此使用了[placeimg](http://placeimg.com/)替换掉该功能。
+
 ## lincense
 [MIT License](https://github.com/tiderjian/lara-for-tp/blob/master/LICENSE.MIT) AND [996ICU License](https://github.com/tiderjian/lara-for-tp/blob/master/LICENSE.996ICU)
