@@ -19,7 +19,7 @@ class FakerTest extends TestCase
     {
         $faker = FakerFactory::create('zh_CN');
         $imageUrl = $faker->imageUrl('1903', '800', 'nature', true, 'sepia');
-        $result = preg_match('/http\:\/\/placeimg\.com\/1903\/800\/nature\/sepia\/\?\d{5}/i', $imageUrl) ? true : false;
+        $result = preg_match('/http\:\/\/placeimg\.com\/1903\/800\/nature\/sepia\?\d{5}/i', $imageUrl) ? true : false;
         $this->assertTrue($result);
     }
 }

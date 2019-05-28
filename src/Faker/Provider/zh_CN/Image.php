@@ -34,7 +34,7 @@ class Image extends Base
         }
 
         if ($randomize) {
-            $url .= '?'.static::randomNumber(5, true);
+            $url = trim($url, '/')  .  '?'.static::randomNumber(5, true);
         }
 
         return $baseUrl.$url;
