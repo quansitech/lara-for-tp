@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithConsole;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase {
+abstract  class TestCase extends BaseTestCase {
 
     use InteractsWithConsole;
 
@@ -19,6 +19,8 @@ class TestCase extends BaseTestCase {
      * @var \Illuminate\Contracts\Foundation\Application
      */
     protected $app;
+
+    abstract protected function laraPath() : string;
 
     /**
      * Creates the application.
