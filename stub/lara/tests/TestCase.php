@@ -6,10 +6,9 @@ use Larafortp\Testing\DuskTestCase;
 
 class TestCase extends DuskTestCase
 {
-
     protected function laraPath() : string
     {
-        return __DIR__ . '/..';
+        return __DIR__.'/..';
     }
 
     public function setUp() : void

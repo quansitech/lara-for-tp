@@ -52,7 +52,7 @@ abstract class DuskTestCase extends TestCase
      */
     public function createApplication()
     {
-        $app = require $this->laraPath() .'/bootstrap/app.php';
+        $app = require $this->laraPath().'/bootstrap/app.php';
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
@@ -60,7 +60,6 @@ abstract class DuskTestCase extends TestCase
 
     public function setUp() : void
     {
-
         static::startChromeDriver();
 
         parent::setUp();

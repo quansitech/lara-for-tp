@@ -1,4 +1,5 @@
 <?php
+
 namespace Larafortp\Testing;
 
 use Carbon\Carbon;
@@ -29,7 +30,7 @@ abstract  class TestCase extends BaseTestCase {
      */
     public function createApplication()
     {
-        $app = require $this->laraPath() .'/bootstrap/app.php';
+        $app = require $this->laraPath().'/bootstrap/app.php';
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
@@ -42,7 +43,7 @@ abstract  class TestCase extends BaseTestCase {
      */
     protected function setUp(): void
     {
-        if (! $this->app) {
+        if (!$this->app) {
             $this->app = $this->createApplication();
         }
 
@@ -56,14 +57,12 @@ abstract  class TestCase extends BaseTestCase {
     protected function tearDown(): void
     {
         if ($this->app) {
-
             $this->app->flush();
 
             $this->app = null;
         }
 
         $this->setUpHasRun = false;
-
 
         if (class_exists(Carbon::class)) {
             Carbon::setTestNow();
