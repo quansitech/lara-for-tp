@@ -1,4 +1,5 @@
 <?php
+
 namespace Larafortp\Testing;
 
 use Carbon\Carbon;
@@ -9,8 +10,8 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithConsole;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase {
-
+class TestCase extends BaseTestCase
+{
     use InteractsWithConsole;
 
     /**
@@ -27,7 +28,7 @@ class TestCase extends BaseTestCase {
      */
     public function createApplication()
     {
-        $app = require $this->laraPath() .'/bootstrap/app.php';
+        $app = require $this->laraPath().'/bootstrap/app.php';
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
@@ -40,7 +41,7 @@ class TestCase extends BaseTestCase {
      */
     protected function setUp(): void
     {
-        if (! $this->app) {
+        if (!$this->app) {
             $this->app = $this->createApplication();
         }
 
@@ -54,14 +55,12 @@ class TestCase extends BaseTestCase {
     protected function tearDown(): void
     {
         if ($this->app) {
-
             $this->app->flush();
 
             $this->app = null;
         }
 
         $this->setUpHasRun = false;
-
 
         if (class_exists(Carbon::class)) {
             Carbon::setTestNow();
