@@ -2,19 +2,13 @@
 
 namespace Lara\Tests;
 
-use Larafortp\Testing\DuskTestCase;
+use Testing\TestCase as BaseTestCase;
 
-class TestCase extends DuskTestCase
+class TestCase extends BaseTestCase
 {
+
     protected function laraPath() : string
     {
-        return __DIR__.'/..';
-    }
-
-    public function setUp() : void
-    {
-        static::useChromedriver('/usr/local/bin/chromedriver');
-
-        parent::setUp();
+        return __DIR__ . '/..';
     }
 }
