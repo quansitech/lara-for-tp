@@ -29,13 +29,6 @@ class Command
             die(1);
         }
 
-        if (!$filesystem->exists($root.'/composer.json')) {
-            fwrite(
-                STDERR,
-                $root.'下找不到composer.json文件'.PHP_EOL
-            );
-            die(1);
-        }
 
         //创建空database/factories文件夹，composer dump-autoload需要该文件夹完成映射配置
         $filesystem->makeDirectory($root.'/lara/database/factories');
