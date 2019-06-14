@@ -312,7 +312,7 @@ class MenuGenerate
         $ControllerData['status'] = isset($data['status']) ? (int) $data['status'] : 1;
         $ControllerData['remark'] = isset($data['remark']) ? $data['remark'] : '';
         $ControllerData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
-        $ControllerData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : (empty($this->node_pid) ? 1 : $this->node_pid);
+        $ControllerData['pid'] = isset($data['pid']) ? (int) $data['pid'] : (empty($this->node_pid) ? 1 : $this->node_pid);
         $ControllerData['level'] = isset($data['level']) ? (int) $data['level'] : 2;
         $ControllerData['menu_id'] = isset($data['menu_id']) ? (int) $data['menu_id'] : (empty($this->menu_pid) ? 0 : $this->menu_pid);
         $ControllerData['icon'] = isset($data['icon']) ? $data['icon'] : '';
@@ -340,12 +340,12 @@ class MenuGenerate
             } else {
                 throw new \Exception('标题为空请检查');
             }
-            $actionData['status'] = (isset($data['status']) && !empty($data['status'])) ? (int) $data['status'] : 1;
+            $actionData['status'] = isset($data['status'])? (int) $data['status'] : 1;
             $actionData['remark'] = isset($data['remark']) ? $data['remark'] : '';
             $actionData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
-            $actionData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : $this->node_pid;
+            $actionData['pid'] = isset($data['pid']) ? (int) $data['pid'] : $this->node_pid;
             $actionData['level'] = (isset($data['level']) && !empty($data['level'])) ? (int) $data['level'] : 3;
-            $actionData['menu_id'] = (isset($data['menu_id']) && !empty($data['menu_id'])) ? (int) $data['menu_id'] : $this->menu_id;
+            $actionData['menu_id'] = isset($data['menu_id']) ? (int) $data['menu_id'] : $this->menu_id;
             $actionData['icon'] = isset($data['icon']) ? $data['icon'] : '';
             $actionData['url'] = isset($data['url']) ? $data['url'] : '';
         } else {
