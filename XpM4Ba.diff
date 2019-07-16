@@ -1,0 +1,221 @@
+diff --git a/src/MenuGenerate.php b/src/MenuGenerate.php
+index ccd1ef47c26b403b88784207d18d05c80aaa41bf..6452cbba0a6c055a62f9f284c2ae76ac491b23cd 100644
+--- a/src/MenuGenerate.php
++++ b/src/MenuGenerate.php
+@@ -17,7 +17,6 @@ class MenuGenerate
+     public $module_id = 0; //模块id        node::level=2时pid使用这个值
+ 
+     /**
+-     * 
+      * 多条记录插入->>二维数组.
+      *
+      * @param $data
+@@ -42,7 +41,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 多条记录插入->>三维数组.
+      *
+      * @param $data
+@@ -128,7 +126,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      *插入数据到menu
+      * $tableData =array('title'=>);
+      * $tablData = 'string';
+@@ -141,7 +138,7 @@ class MenuGenerate
+          * 菜单数据有两种level=1,为头部导航，level=2为左边导航
+          */
+         if (is_array($tableData)) {
+-            if(empty($tableData['title'])){
++            if (empty($tableData['title'])) {
+                 throw new \Exception('菜单title为空请检查');
+             }
+             //获取数据
+@@ -168,6 +165,7 @@ class MenuGenerate
+         } else {
+             if (empty($tableData)) {
+                 $this->menu_id = 0;
++
+                 return;
+                 //throw new \Exception('insertMenu Null');
+             }
+@@ -206,7 +204,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 创建node数据中的控制器数据，
+      * 数据格式应为
+      *$tableData =array('name'=>);
+@@ -236,7 +233,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 创建node数据中的方法数据，传值为
+      * $data['name'] 和 $data['title'] 必须.
+      */
+@@ -265,7 +261,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      *创建menu数据
+      * 负责数据生成.
+      */
+@@ -308,7 +303,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      *创建node 控制器的数据
+      * 数组$data['name'] 必须
+      * 如果是传string，则需要传控制器名，.
+@@ -336,7 +330,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      *创建node action数据（即方法、函数）
+      * 注意必填项为$data['name']、$data['title'].
+      */
+@@ -371,7 +364,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 使用insertNavigationAll生成则是这个方法删除.
+      *回滚部分.
+      *
+@@ -409,7 +401,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * * 使用indertAll创建数据，则必须使用这个方法回滚.
+      *
+      * @param $data
+@@ -450,11 +441,9 @@ class MenuGenerate
+                 $this->deleteMenu($menu->id);
+             }
+         }
+-
+     }
+ 
+     /**
+-     * 
+      * 处理 设置模块id.
+      *
+      * @param $moduleName
+@@ -472,7 +461,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 设置top_menu menu_pid.
+      *
+      * @param $menuName
+@@ -490,7 +478,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 处理 backend_menu.
+      *
+      * @param $menuName
+@@ -508,7 +495,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      *处理节点的逻辑关系.
+      *
+      * @param $data  这是一个数组
+@@ -540,10 +526,12 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 查询menu
++     * 查询menu.
++     *
+      * @param $title
+      * @param $level
+      * @param $pid
++     *
+      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
+      */
+     public function queryMenu($title, $level, $pid)
+@@ -555,7 +543,6 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+      * 查询menu.
+      *
+      * @param $name 菜单名
+@@ -579,8 +566,10 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 查询id=pid的子节点数
++     * 查询id=pid的子节点数.
++     *
+      * @param $pid
++     *
+      * @return int
+      */
+     public function countChildrenMenu($pid)
+@@ -589,9 +578,10 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+-     * 查询id=pid的子节点数
++     * 查询id=pid的子节点数.
++     *
+      * @param $pid
++     *
+      * @return int
+      */
+     public function countChildrenNode($pid)
+@@ -600,9 +590,10 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 
+-     * 查询菜单下是否有子节点
++     * 查询菜单下是否有子节点.
++     *
+      * @param $menu_id
++     *
+      * @return int
+      */
+     public function countMenuChildrenNode($menu_id)
+@@ -611,8 +602,10 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 删除菜单
++     * 删除菜单.
++     *
+      * @param $id
++     *
+      * @return int
+      */
+     public function deleteMenu($id)
+@@ -621,8 +614,10 @@ class MenuGenerate
+     }
+ 
+     /**
+-     * 删除节点
++     * 删除节点.
++     *
+      * @param $id 节点id
++     *
+      * @return int
+      */
+     public function deleteNode($id)
