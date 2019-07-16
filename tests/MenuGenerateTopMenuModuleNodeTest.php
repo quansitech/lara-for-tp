@@ -85,38 +85,38 @@ class MenuGenerateTopMenuModuleNodeTest extends TestCase
         $this->captureException($data, '模块创建异常,模块名为空');
     }
 
-    /**
-     * 添加菜单.
-     */
-    public function testAddBackMenuException()
-    {
-        $data = [
-            [
-                'title'      => '平台2', //标题              (必填)
-                'module'     => 'newsAdmin', //模块英文名        (必填)
-                'module_name'=> '后台管理', //模块中文名   (必填)
-                'url'        => '', //url                  (必填)
-                'type'       => '', //类型                (选填）
-                'sort'       => 0, //排序                (选填）
-                'icon'       => '', //icon                (选填）
-                'status'     => 1, //状态              (选填）
-                'top_menu'   => [
-                    ''=> [
-                        [
-                            'name'      => 'index',       //（必填）
-                            'title'     => '测试新闻中心',    //（必填）'
-                            'controller'=> 'News', //（必填）
-                            'sort'      => 1, //排序       //（选填）
-                            'icon'      => '', //图标        //（选填）
-                            'remark'    => '', //备注      //（选填）
-                            'status'    => 1, //状态        //（选填）
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $this->captureException($data, '菜单title为空请检查');
-    }
+//    /**
+//     * 添加菜单.
+//     */
+//    public function testAddBackMenuException()
+//    {
+//        $data = [
+//            [
+//                'title'      => '平台2', //标题              (必填)
+//                'module'     => 'newsAdmin', //模块英文名        (必填)
+//                'module_name'=> '后台管理', //模块中文名   (必填)
+//                'url'        => '', //url                  (必填)
+//                'type'       => '', //类型                (选填）
+//                'sort'       => 0, //排序                (选填）
+//                'icon'       => '', //icon                (选填）
+//                'status'     => 1, //状态              (选填）
+//                'top_menu'   => [
+//                    ''=> [
+//                        [
+//                            'name'      => 'index',       //（必填）
+//                            'title'     => '测试新闻中心',    //（必填）'
+//                            'controller'=> 'News', //（必填）
+//                            'sort'      => 1, //排序       //（选填）
+//                            'icon'      => '', //图标        //（选填）
+//                            'remark'    => '', //备注      //（选填）
+//                            'status'    => 1, //状态        //（选填）
+//                        ],
+//                    ],
+//                ],
+//            ],
+//        ];
+//        $this->captureException($data, '菜单title为空请检查');
+//    }
 
     /**
      * 添加控制器.

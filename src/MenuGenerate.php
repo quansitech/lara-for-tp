@@ -17,6 +17,7 @@ class MenuGenerate
     public $module_id = 0; //模块id        node::level=2时pid使用这个值
 
     /**
+     * 
      * 多条记录插入->>二维数组.
      *
      * @param $data
@@ -25,6 +26,7 @@ class MenuGenerate
      */
     public function insertAll($data)
     {
+        $this->resetInsertAll();
         DB::beginTransaction();
 
         try {
@@ -40,6 +42,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 多条记录插入->>三维数组.
      *
      * @param $data
@@ -48,6 +51,7 @@ class MenuGenerate
      */
     public function insertNavigationAll($data)
     {
+        $this->resetInsertAll();
         DB::beginTransaction();
 
         try {
@@ -124,6 +128,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      *插入数据到menu
      * $tableData =array('title'=>);
      * $tablData = 'string';
@@ -132,13 +137,13 @@ class MenuGenerate
      */
     public function insertMenu($tableData)
     {
-        if (empty($tableData)) {
-            throw new \Exception('insertMenu Null');
-        }
         /*
          * 菜单数据有两种level=1,为头部导航，level=2为左边导航
          */
         if (is_array($tableData)) {
+            if(empty($tableData['title'])){
+                throw new \Exception('菜单title为空请检查');
+            }
             //获取数据
             if (isset($tableData['level']) && $tableData['level'] == 1) {
                 $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 1)->first();
@@ -161,6 +166,11 @@ class MenuGenerate
                 }
             }
         } else {
+            if (empty($tableData)) {
+                $this->menu_id = 0;
+                return;
+                //throw new \Exception('insertMenu Null');
+            }
             $firstData = DB::table('qs_menu')->where('title', $tableData)->where('level', 2)->first();
             if (empty($firstData)) {
                 $data = $this->createMenuDataArray($tableData);
@@ -196,6 +206,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 创建node数据中的控制器数据，
      * 数据格式应为
      *$tableData =array('name'=>);
@@ -225,6 +236,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 创建node数据中的方法数据，传值为
      * $data['name'] 和 $data['title'] 必须.
      */
@@ -253,6 +265,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      *创建menu数据
      * 负责数据生成.
      */
@@ -295,6 +308,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      *创建node 控制器的数据
      * 数组$data['name'] 必须
      * 如果是传string，则需要传控制器名，.
@@ -312,7 +326,7 @@ class MenuGenerate
         $ControllerData['status'] = isset($data['status']) ? (int) $data['status'] : 1;
         $ControllerData['remark'] = isset($data['remark']) ? $data['remark'] : '';
         $ControllerData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
-        $ControllerData['pid'] = isset($data['pid']) ? (int) $data['pid'] : (empty($this->node_pid) ? 1 : $this->node_pid);
+        $ControllerData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : (empty($this->node_pid) ? 1 : $this->node_pid);
         $ControllerData['level'] = isset($data['level']) ? (int) $data['level'] : 2;
         $ControllerData['menu_id'] = isset($data['menu_id']) ? (int) $data['menu_id'] : (empty($this->menu_pid) ? 0 : $this->menu_pid);
         $ControllerData['icon'] = isset($data['icon']) ? $data['icon'] : '';
@@ -322,6 +336,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      *创建node action数据（即方法、函数）
      * 注意必填项为$data['name']、$data['title'].
      */
@@ -340,12 +355,12 @@ class MenuGenerate
             } else {
                 throw new \Exception('标题为空请检查');
             }
-            $actionData['status'] = isset($data['status'])? (int) $data['status'] : 1;
+            $actionData['status'] = (isset($data['status']) && !empty($data['status'])) ? (int) $data['status'] : 1;
             $actionData['remark'] = isset($data['remark']) ? $data['remark'] : '';
             $actionData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
-            $actionData['pid'] = isset($data['pid']) ? (int) $data['pid'] : $this->node_pid;
+            $actionData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : $this->node_pid;
             $actionData['level'] = (isset($data['level']) && !empty($data['level'])) ? (int) $data['level'] : 3;
-            $actionData['menu_id'] = isset($data['menu_id']) ? (int) $data['menu_id'] : $this->menu_id;
+            $actionData['menu_id'] = (isset($data['menu_id']) && !empty($data['menu_id'])) ? (int) $data['menu_id'] : $this->menu_id;
             $actionData['icon'] = isset($data['icon']) ? $data['icon'] : '';
             $actionData['url'] = isset($data['url']) ? $data['url'] : '';
         } else {
@@ -356,6 +371,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 使用insertNavigationAll生成则是这个方法删除.
      *回滚部分.
      *
@@ -365,6 +381,7 @@ class MenuGenerate
      */
     public function insertNavigationAllRollback($data)
     {
+        $this->resetInsertAll();
         DB::beginTransaction();
 
         try {
@@ -392,6 +409,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * * 使用indertAll创建数据，则必须使用这个方法回滚.
      *
      * @param $data
@@ -400,6 +418,7 @@ class MenuGenerate
      */
     public function insertAllRollback($data)
     {
+        $this->resetInsertAll();
         $this->menu_pid = 3; //菜单的pid     默认为平台
         $this->module_id = 1; //模块id       默认为admin
         DB::beginTransaction();
@@ -419,19 +438,23 @@ class MenuGenerate
     public function handleMenuNode($title, $node)
     {
         $menu = $this->queryMenu($title, 2, $this->menu_pid);
-        if (empty($menu)) {
-            throw new \Exception('回滚的菜单名不存在或者为空');
+        if (empty($menu) && !empty($title)) {
+            throw new \Exception('回滚的菜单名不存在');
         }
         foreach ($node as $item) {
             $this->handleNode($item);
         }
-        //删除菜单
-        if (!$this->countMenuChildrenNode($menu->id)) {
-            $this->deleteMenu($menu->id);
+        if (!empty($menu)) {
+            //删除菜单
+            if (!$this->countMenuChildrenNode($menu->id)) {
+                $this->deleteMenu($menu->id);
+            }
         }
+
     }
 
     /**
+     * 
      * 处理 设置模块id.
      *
      * @param $moduleName
@@ -449,6 +472,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 设置top_menu menu_pid.
      *
      * @param $menuName
@@ -466,6 +490,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 处理 backend_menu.
      *
      * @param $menuName
@@ -483,6 +508,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      *处理节点的逻辑关系.
      *
      * @param $data  这是一个数组
@@ -513,7 +539,8 @@ class MenuGenerate
         }
     }
 
-    /**查询menu
+    /**
+     * 查询menu
      * @param $title
      * @param $level
      * @param $pid
@@ -528,6 +555,7 @@ class MenuGenerate
     }
 
     /**
+     * 
      * 查询menu.
      *
      * @param $name 菜单名
@@ -550,7 +578,8 @@ class MenuGenerate
             ->first();
     }
 
-    /**查询id=pid的子节点数
+    /**
+     * 查询id=pid的子节点数
      * @param $pid
      * @return int
      */
@@ -559,7 +588,9 @@ class MenuGenerate
         return DB::table('qs_menu')->where('pid', $pid)->count();
     }
 
-    /**查询id=pid的子节点数
+    /**
+     * 
+     * 查询id=pid的子节点数
      * @param $pid
      * @return int
      */
@@ -568,8 +599,10 @@ class MenuGenerate
         return DB::table('qs_node')->where('pid', $pid)->count();
     }
 
-    /**查询菜单下是否有子节点
-     * @param $pid
+    /**
+     * 
+     * 查询菜单下是否有子节点
+     * @param $menu_id
      * @return int
      */
     public function countMenuChildrenNode($menu_id)
@@ -577,7 +610,8 @@ class MenuGenerate
         return DB::table('qs_node')->where('menu_id', $menu_id)->count();
     }
 
-    /**删除菜单
+    /**
+     * 删除菜单
      * @param $id
      * @return int
      */
@@ -586,7 +620,8 @@ class MenuGenerate
         return DB::table('qs_menu')->delete($id);
     }
 
-    /**删除节点
+    /**
+     * 删除节点
      * @param $id 节点id
      * @return int
      */

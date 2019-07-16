@@ -42,21 +42,21 @@ class RollbackMenuExceptionTest extends TestCase
     }
 
     //回滚InsertAll
-    public function testRollbackNullMenu()
-    {
-        $this->insert();
-        //回滚菜单异常
-        $data = [
-            ''=> [
-                [
-                    'name'      => 'index',
-                    'title'     => '新闻分类',
-                    'controller'=> 'NewsCate',
-                ],
-            ],
-        ];
-        $this->captureException($data, '回滚的菜单名不存在或者为空');
-    }
+//    public function testRollbackNullMenu()
+//    {
+//        $this->insert();
+//        //回滚菜单异常
+//        $data = [
+//            ''=> [
+//                [
+//                    'name'      => 'index',
+//                    'title'     => '新闻分类',
+//                    'controller'=> 'NewsCate',
+//                ],
+//            ],
+//        ];
+//        $this->captureException($data, '回滚的菜单名不存在或者为空');
+//    }
 
     //回滚不存在的菜单名
     public function testRollbackNotMenu()
@@ -73,7 +73,7 @@ class RollbackMenuExceptionTest extends TestCase
             ],
         ];
         //集团机构不在数据库中
-        $this->captureException($data, '回滚的菜单名不存在或者为空');
+        $this->captureException($data, '回滚的菜单名不存在');
     }
 
     //空控制器
@@ -302,7 +302,7 @@ class RollbackMenuExceptionTest extends TestCase
         $data = $this->TopMenuData();
         $this->insertNavigationAll($data);
         $data[0]['top_menu']['新闻中心'][0]['name'] = '';
-        $this->captureNavException($this->BackMenu(1), '回滚的菜单名不存在或者为空');
+        $this->captureNavException($this->BackMenu(1), '回滚的菜单名不存在');
     }
 
     //不存在菜单名
@@ -310,45 +310,61 @@ class RollbackMenuExceptionTest extends TestCase
     {
         $data = $this->TopMenuData();
         $this->insertNavigationAll($data);
-        $this->captureNavException($this->BackMenu(), '回滚的菜单名不存在或者为空');
+        $this->captureNavException($this->BackMenu(), '回滚的菜单名不存在');
     }
 
     public function BackMenu($num = 2)
     {
-        if ($num === 1) {
-            return [
-                [
-                    'title'      => '平台2', //标题              (必填)
-                    'module'     => 'admin2', //模块英文名        (必填)
-                    'module_name'=> '后台管理', //模块中文名   (必填)
-                    'top_menu'   => [
-                        ''=> [
-                            [
-                                'name'      => 'index',
-                                'title'     => '新闻分类',
-                                'controller'=> 'NewsCate',
-                            ],
+        return [
+            [
+                'title'      => '平台2', //标题              (必填)
+                'module'     => 'admin2', //模块英文名        (必填)
+                'module_name'=> '后台管理', //模块中文名   (必填)
+                'top_menu'   => [
+                    '不存在菜单名'=> [
+                        [
+                            'name'      => 'index',
+                            'title'     => '新闻分类',
+                            'controller'=> 'NewsCate',
                         ],
                     ],
                 ],
-            ];
-        } else {
-            return [
-                [
-                    'title'      => '平台2', //标题              (必填)
-                    'module'     => 'admin2', //模块英文名        (必填)
-                    'module_name'=> '后台管理', //模块中文名   (必填)
-                    'top_menu'   => [
-                        '不存在菜单名'=> [
-                            [
-                                'name'      => 'index',
-                                'title'     => '新闻分类',
-                                'controller'=> 'NewsCate',
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-        }
+            ],
+        ];
+//        if ($num === 1) {
+//            return [
+//                [
+//                    'title'      => '平台2', //标题              (必填)
+//                    'module'     => 'admin2', //模块英文名        (必填)
+//                    'module_name'=> '后台管理', //模块中文名   (必填)
+//                    'top_menu'   => [
+//                        ''=> [
+//                            [
+//                                'name'      => 'index',
+//                                'title'     => '新闻分类',
+//                                'controller'=> 'NewsCate',
+//                            ],
+//                        ],
+//                    ],
+//                ],
+//            ];
+//        } else {
+//            return [
+//                [
+//                    'title'      => '平台2', //标题              (必填)
+//                    'module'     => 'admin2', //模块英文名        (必填)
+//                    'module_name'=> '后台管理', //模块中文名   (必填)
+//                    'top_menu'   => [
+//                        '不存在菜单名'=> [
+//                            [
+//                                'name'      => 'index',
+//                                'title'     => '新闻分类',
+//                                'controller'=> 'NewsCate',
+//                            ],
+//                        ],
+//                    ],
+//                ],
+//            ];
+//        }
     }
 }

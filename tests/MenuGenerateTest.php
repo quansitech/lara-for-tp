@@ -19,21 +19,21 @@ class MenuGenerateTest extends TestCase
 
     //下面用的是insertAll方法
     //菜单空异常
-    public function testAddMenuException()
-    {
-        $data = [];
-        $data[''] = [
-            [
-                'name'      => 'index',
-                'title'     => '首页轮播图',
-                'sort'      => 0,
-                'controller'=> 'Index1',
-                'status'    => 1,
-            ],
-        ];
-        //未设置键值异常
-        $this->captureException($data, 'insertMenu Null');
-    }
+//    public function testAddMenuException()
+//    {
+//        $data = [];
+//        $data[''] = [
+//            [
+//                'name'      => 'index',
+//                'title'     => '首页轮播图',
+//                'sort'      => 0,
+//                'controller'=> 'Index1',
+//                'status'    => 1,
+//            ],
+//        ];
+//        //未设置键值异常
+//        $this->captureException($data, 'insertMenu Null');
+//    }
 
     /**
      * 添加控制器//异常.
