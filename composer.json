@@ -20,9 +20,6 @@
             "src\/Faker\/Provider\/zh_CN"
         ],
         "psr-4": {
-            "Lara\\": "../../../lara/",
-            "Lara\\Tests\\":"../../../lara/tests/",
-            "App\\": "../../../lara/app/",
             "Larafortp\\": "src/"
         }
     },
