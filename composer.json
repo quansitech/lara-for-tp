@@ -38,5 +38,12 @@
             "email": "164710115@qq.com"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+      "laravel": {
+        "providers": [
+          "Larafortp\\Provider\\QscmfServiceProvider"
+        ]
+      }
+    }
 }
