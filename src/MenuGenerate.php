@@ -25,6 +25,7 @@ class MenuGenerate
      */
     public function insertAll($data)
     {
+        $this->resetInsertAll();
         DB::beginTransaction();
 
         try {
@@ -48,6 +49,7 @@ class MenuGenerate
      */
     public function insertNavigationAll($data)
     {
+        $this->resetInsertAll();
         DB::beginTransaction();
 
         try {
@@ -132,13 +134,13 @@ class MenuGenerate
      */
     public function insertMenu($tableData)
     {
-        if (empty($tableData)) {
-            throw new \Exception('insertMenu Null');
-        }
         /*
          * 菜单数据有两种level=1,为头部导航，level=2为左边导航
          */
         if (is_array($tableData)) {
+            if (empty($tableData['title'])) {
+                throw new \Exception('菜单title为空请检查');
+            }
             //获取数据
             if (isset($tableData['level']) && $tableData['level'] == 1) {
                 $firstData = DB::table('qs_menu')->where('title', $tableData['title'])->where('level', 1)->first();
@@ -161,6 +163,12 @@ class MenuGenerate
                 }
             }
         } else {
+            if (empty($tableData)) {
+                $this->menu_id = 0;
+
+                return;
+                //throw new \Exception('insertMenu Null');
+            }
             $firstData = DB::table('qs_menu')->where('title', $tableData)->where('level', 2)->first();
             if (empty($firstData)) {
                 $data = $this->createMenuDataArray($tableData);
@@ -365,6 +373,7 @@ class MenuGenerate
      */
     public function insertNavigationAllRollback($data)
     {
+        $this->resetInsertAll();
         DB::beginTransaction();
 
         try {
@@ -400,6 +409,7 @@ class MenuGenerate
      */
     public function insertAllRollback($data)
     {
+        $this->resetInsertAll();
         $this->menu_pid = 3; //菜单的pid     默认为平台
         $this->module_id = 1; //模块id       默认为admin
         DB::beginTransaction();
@@ -419,15 +429,17 @@ class MenuGenerate
     public function handleMenuNode($title, $node)
     {
         $menu = $this->queryMenu($title, 2, $this->menu_pid);
-        if (empty($menu)) {
-            throw new \Exception('回滚的菜单名不存在或者为空');
+        if (empty($menu) && !empty($title)) {
+            throw new \Exception('回滚的菜单名不存在');
         }
         foreach ($node as $item) {
             $this->handleNode($item);
         }
-        //删除菜单
-        if (!$this->countMenuChildrenNode($menu->id)) {
-            $this->deleteMenu($menu->id);
+        if (!empty($menu)) {
+            //删除菜单
+            if (!$this->countMenuChildrenNode($menu->id)) {
+                $this->deleteMenu($menu->id);
+            }
         }
     }
 
@@ -513,10 +525,13 @@ class MenuGenerate
         }
     }
 
-    /**查询menu
+    /**
+     * 查询menu.
+     *
      * @param $title
      * @param $level
      * @param $pid
+     *
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
      */
     public function queryMenu($title, $level, $pid)
@@ -550,8 +565,11 @@ class MenuGenerate
             ->first();
     }
 
-    /**查询id=pid的子节点数
+    /**
+     * 查询id=pid的子节点数.
+     *
      * @param $pid
+     *
      * @return int
      */
     public function countChildrenMenu($pid)
@@ -559,8 +577,11 @@ class MenuGenerate
         return DB::table('qs_menu')->where('pid', $pid)->count();
     }
 
-    /**查询id=pid的子节点数
+    /**
+     * 查询id=pid的子节点数.
+     *
      * @param $pid
+     *
      * @return int
      */
     public function countChildrenNode($pid)
@@ -568,8 +589,11 @@ class MenuGenerate
         return DB::table('qs_node')->where('pid', $pid)->count();
     }
 
-    /**查询菜单下是否有子节点
-     * @param $pid
+    /**
+     * 查询菜单下是否有子节点.
+     *
+     * @param $menu_id
+     *
      * @return int
      */
     public function countMenuChildrenNode($menu_id)
@@ -577,8 +601,11 @@ class MenuGenerate
         return DB::table('qs_node')->where('menu_id', $menu_id)->count();
     }
 
-    /**删除菜单
+    /**
+     * 删除菜单.
+     *
      * @param $id
+     *
      * @return int
      */
     public function deleteMenu($id)
@@ -586,8 +613,11 @@ class MenuGenerate
         return DB::table('qs_menu')->delete($id);
     }
 
-    /**删除节点
+    /**
+     * 删除节点.
+     *
      * @param $id 节点id
+     *
      * @return int
      */
     public function deleteNode($id)
